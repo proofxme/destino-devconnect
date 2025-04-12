@@ -1,6 +1,6 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { PointOfInterest, DEFAULT_CENTER, DEFAULT_ZOOM } from './mapUtils';
+import { PointOfInterest, DEFAULT_CENTER, DEFAULT_ZOOM, getIcon } from './mapUtils';
 import 'leaflet/dist/leaflet.css';
 
 interface MapComponentProps {
@@ -12,12 +12,13 @@ const MapComponent = ({ pois, onSelectPOI }: MapComponentProps) => {
   return (
     <div className="h-full w-full">
       <MapContainer 
+        className="h-full w-full"
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
-        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
         />
         
         {pois.map((poi) => (

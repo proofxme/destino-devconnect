@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
@@ -125,11 +126,12 @@ const EventCalendar = () => {
             hasEvent: (date) => isDayWithEvent(date)
           }}
           styles={{
-            day: (date) => {
-              if (isDayWithEvent(date)) {
-                return { fontWeight: "bold", textDecoration: "underline" };
+            day: {
+              // Fix: Use an object instead of a function
+              "&[data-has-event]": {
+                fontWeight: "bold",
+                textDecoration: "underline"
               }
-              return {};
             }
           }}
         />
