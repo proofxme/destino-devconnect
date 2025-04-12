@@ -72,7 +72,7 @@ export default {
 				devconnect: {
 					primary: '#1EAEDB',
 					secondary: '#33C3F0',
-					dark: '#221F26',
+					dark: '#222222',
 					light: '#F6F6F7',
 				}
 			},

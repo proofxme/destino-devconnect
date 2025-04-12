@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({
         <Navbar />
         <div className="pt-16"> {/* Adjusted padding for taller navbar */}
           {connected && isHomePage && <TripSidebar isMobile />}
-          <main className="px-4 py-6">{children}</main>
+          <main className="p-4">{children}</main>
         </div>
       </div>
     );
@@ -54,13 +54,19 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="min-h-screen flex bg-background">
       <AppSidebar />
+      
       <div className="flex-1 flex flex-col">
         <Navbar />
         
-        <div className="pt-16 flex flex-1"> {/* Adjusted padding for taller navbar */}
+        <div className="pt-16 flex flex-1 relative">
+          <main className="flex-1 p-6">
+            {connected && isHomePage && <TripSidebar isMobile />}
+            {children}
+          </main>
+          
           {connected && isHomePage && (
             <div 
-              className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-sidebar-border bg-sidebar z-10 transition-all duration-300 ease-in-out ${
+              className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-gray-200 bg-card z-10 transition-all duration-300 ease-in-out ${
                 sidebarCollapsed ? 'w-16 trip-sidebar-collapsed' : 'w-80 trip-sidebar-expanded'
               }`}
               id="trip-sidebar"
@@ -69,7 +75,7 @@ const Layout: React.FC<LayoutProps> = ({
                 <Button 
                   variant="outline" 
                   size="icon" 
-                  className="h-8 w-8 rounded-full border shadow-sm bg-background" 
+                  className="h-8 w-8 rounded-full border shadow-sm bg-card" 
                   onClick={toggleSidebar}
                   aria-label={sidebarCollapsed ? "Expand trip sidebar" : "Collapse trip sidebar"}
                 >
@@ -79,14 +85,6 @@ const Layout: React.FC<LayoutProps> = ({
               <TripSidebar collapsed={sidebarCollapsed} />
             </div>
           )}
-          
-          <main 
-            className={`flex-1 px-6 py-6 ${
-              connected && isHomePage ? (sidebarCollapsed ? 'mr-16' : 'mr-80') : ''
-            } transition-all duration-300 ease-in-out`}
-          >
-            {children}
-          </main>
         </div>
       </div>
     </div>

@@ -24,10 +24,10 @@ const App = () => (
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <SidebarProvider>
-          <WalletProvider>
-            <Toaster />
-            <Sonner />
+        <WalletProvider>
+          <Toaster />
+          <Sonner />
+          <SidebarProvider>
             <BrowserRouter>
               <Layout>
                 <Routes>
@@ -44,8 +44,8 @@ const App = () => (
                 </Routes>
               </Layout>
             </BrowserRouter>
-          </WalletProvider>
-        </SidebarProvider>
+          </SidebarProvider>
+        </WalletProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </React.StrictMode>

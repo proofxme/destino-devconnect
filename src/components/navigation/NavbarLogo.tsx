@@ -14,7 +14,7 @@ export const NavbarLogo = ({ isScrolled }: NavbarLogoProps) => {
       </span>
       <span className={cn(
         "text-xl font-bold leading-none transition-colors",
-        isScrolled ? "text-sidebar-foreground" : "text-white"
+        isScrolled ? "text-devconnect-dark" : "text-white"
       )}>
         Devconnect
       </span>
