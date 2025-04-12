@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useWallet } from "@/context/WalletContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 import TripSidebar from "./trip/TripSidebar";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
