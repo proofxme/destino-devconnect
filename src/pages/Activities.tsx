@@ -1,11 +1,15 @@
-
+import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Activity } from "lucide-react";
+import { filterByCity } from "@/utils/filterHelpers";
 
 const Activities = () => {
+  const [searchParams] = useSearchParams();
+  const cityParam = searchParams.get("city");
+  
   const activities = [
     {
       id: 1,
@@ -69,6 +73,9 @@ const Activities = () => {
     }
   ];
 
+  // Filter activities by city
+  const filteredActivities = filterByCity(activities, cityParam);
+
   // Get badge color based on activity category
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -103,40 +110,47 @@ const Activities = () => {
 
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activities.map((activity) => (
-              <Card key={activity.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={activity.imageUrl} 
-                    alt={activity.title} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge className={getCategoryColor(activity.category)}>
-                      <Activity size={12} className="mr-1" />
-                      {activity.category}
-                    </Badge>
+          {filteredActivities.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-medium text-gray-600">No activities found for the selected city</h3>
+              <p className="mt-2 text-gray-500">Try selecting a different city or viewing all activities</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredActivities.map((activity) => (
+                <Card key={activity.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={activity.imageUrl} 
+                      alt={activity.title} 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
-                  <div className="flex items-center text-sm text-gray-600 mb-2">
-                    <MapPin size={16} className="mr-1" />
-                    {activity.location}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600 mb-3">
-                    <Clock size={16} className="mr-1" />
-                    {activity.duration} • Best time: {activity.bestTime}
-                  </div>
-                  <p className="text-gray-700 mb-3">{activity.description}</p>
-                  <button className="text-devconnect-primary hover:underline">
-                    Learn More
-                  </button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-2">
+                      <Badge className={getCategoryColor(activity.category)}>
+                        <Activity size={12} className="mr-1" />
+                        {activity.category}
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
+                    <div className="flex items-center text-sm text-gray-600 mb-2">
+                      <MapPin size={16} className="mr-1" />
+                      {activity.location}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600 mb-3">
+                      <Clock size={16} className="mr-1" />
+                      {activity.duration} • Best time: {activity.bestTime}
+                    </div>
+                    <p className="text-gray-700 mb-3">{activity.description}</p>
+                    <button className="text-devconnect-primary hover:underline">
+                      Learn More
+                    </button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

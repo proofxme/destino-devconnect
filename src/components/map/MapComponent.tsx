@@ -2,19 +2,21 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { PointOfInterest, DEFAULT_CENTER, DEFAULT_ZOOM, getIcon } from './mapUtils';
 import 'leaflet/dist/leaflet.css';
+import { ReactElement } from 'react';
 
 interface MapComponentProps {
   pois: PointOfInterest[];
   onSelectPOI: (poi: PointOfInterest) => void;
 }
 
-const MapComponent = ({ pois, onSelectPOI }: MapComponentProps) => {
+const MapComponent = ({ pois, onSelectPOI }: MapComponentProps): ReactElement => {
   return (
     <div className="h-full w-full">
       <MapContainer 
         className="h-full w-full"
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
+        scrollWheelZoom={false}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -25,6 +27,7 @@ const MapComponent = ({ pois, onSelectPOI }: MapComponentProps) => {
           <Marker 
             key={poi.id}
             position={poi.position}
+            icon={getIcon(poi.category)}
             eventHandlers={{
               click: () => {
                 onSelectPOI(poi);

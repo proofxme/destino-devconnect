@@ -1,9 +1,12 @@
+
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Wallet, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import { CityFilter } from "./CityFilter";
+import { SearchSpotlight } from "./SearchSpotlight";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -111,6 +114,9 @@ const Navbar = () => {
             </Link>
           ))}
           
+          <CityFilter />
+          <SearchSpotlight />
+          
           {isConnected ? (
             <div className="flex items-center space-x-2">
               <Button
@@ -143,6 +149,8 @@ const Navbar = () => {
         </div>
         
         <div className="md:hidden flex items-center">
+          <SearchSpotlight />
+          
           {isConnected && (
             <Button
               onClick={goToAdminDashboard}
@@ -179,6 +187,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white w-full">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+            <CityFilter />
             {navItems.map((item) => (
               <Link 
                 key={item.name}
