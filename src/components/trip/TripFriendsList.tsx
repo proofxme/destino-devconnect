@@ -13,7 +13,7 @@ interface TripFriendsListProps {
 }
 
 const TripFriendsList: React.FC<TripFriendsListProps> = ({ friends, loading }) => {
-  const [expandedFriend, setExpandedFriend] = useState<number | null>(null);
+  const [expandedFriend, setExpandedFriend] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -43,7 +43,7 @@ const TripFriendsList: React.FC<TripFriendsListProps> = ({ friends, loading }) =
     );
   }
 
-  const toggleExpand = (id: number) => {
+  const toggleExpand = (id: string) => {
     setExpandedFriend(expandedFriend === id ? null : id);
   };
 
@@ -97,9 +97,9 @@ const TripFriendsList: React.FC<TripFriendsListProps> = ({ friends, loading }) =
                   <div className="px-3 pb-3 pt-0">
                     <div className="text-xs font-medium text-gray-500 mb-2 mt-1">Events:</div>
                     <div className="flex flex-wrap gap-1">
-                      {friend.events.map((event, index) => (
+                      {friend.events.map((eventId, index) => (
                         <Badge key={index} variant="secondary" className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 border-none">
-                          {event.name}
+                          {eventId}
                         </Badge>
                       ))}
                     </div>
