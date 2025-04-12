@@ -15,7 +15,7 @@ interface WalletContextType {
   connected: boolean;
   connecting: boolean;
   connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  disconnect: () => Promise<boolean>; // Updated return type to match implementation
   walletAddress: string | null;
   transactions: Transaction[];
 }

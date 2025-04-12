@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -33,11 +32,8 @@ const UserProfileDropdown = () => {
   };
 
   const handleLogout = async () => {
-    await disconnect();
-    toast({
-      title: "Logged Out",
-      description: "You have successfully logged out of your account.",
-    });
+    const success = await disconnect();
+    // We don't need to handle the success value here since the disconnect function already shows a toast
     setIsOpen(false);
   };
 
