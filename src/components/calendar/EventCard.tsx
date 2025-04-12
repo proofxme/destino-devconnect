@@ -49,10 +49,10 @@ const EventCard: React.FC<EventCardProps> = ({
       whileHover={{ scale: 1.03 }}
       className="h-full"
     >
-      <Card className="h-full overflow-hidden border-2 hover:border-argentina-blue transition-all duration-300 shadow-md hover:shadow-xl">
+      <Card className="h-full overflow-hidden border hover:border-argentina-blue transition-all duration-300 shadow-md hover:shadow-xl bg-white rounded-xl">
         <CardContent className="p-0">
           <div className="relative">
-            <div className="h-3 bg-gradient-to-r from-argentina-blue to-devconnect-primary" />
+            <div className="h-2 bg-gradient-to-r from-argentina-blue to-devconnect-primary" />
             <Badge className={`${getCategoryColor(category)} absolute top-3 right-3 font-medium`}>
               {category.charAt(0).toUpperCase() + category.slice(1)}
             </Badge>

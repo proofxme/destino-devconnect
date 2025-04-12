@@ -1,10 +1,8 @@
 
 import React, { useState, useEffect } from "react";
-import { format, parseISO } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, getDaysInMonth, getDay, addDays, isSameMonth, isSameDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, ChevronRight, Bell, Settings, MoreVertical } from "lucide-react";
 import EventCard from "./EventCard";
 
 type EventCategory = "conference" | "workshop" | "social" | "hackathon";
@@ -70,194 +68,264 @@ const events: Event[] = [
   }
 ];
 
+const DAYS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 const EnhancedCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date("2025-11-15"));
-  const [selectedEvents, setSelectedEvents] = useState<Event[]>([]);
-  const [animationDirection, setAnimationDirection] = useState<"right" | "left">("right");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date("2025-11-15"));
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date("2025-11-01"));
+  const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeMonth, setActiveMonth] = useState<number>(10); // November (0-indexed)
+  const [activeYear, setActiveYear] = useState<number>(2025);
 
   // Function to get events for a specific day
-  const getEventsForDay = (day: Date | undefined) => {
-    if (!day) return [];
+  const getEventsForDay = (day: Date) => {
     return events.filter(
-      event => format(event.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
+      event => isSameDay(event.date, day)
     );
+  };
+
+  // Get dates with events in the current month
+  const getDatesWithEvents = (month: Date) => {
+    return events
+      .filter(event => isSameMonth(event.date, month))
+      .map(event => event.date.getDate());
   };
 
   // Handler for date selection
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      setIsLoading(true);
-      
-      // Determine animation direction based on date comparison
-      if (selectedDate && date > selectedDate) {
-        setAnimationDirection("right");
-      } else {
-        setAnimationDirection("left");
-      }
-      
-      setSelectedDate(date);
-      
-      // Simulate loading with a small delay for smoother transitions
-      setTimeout(() => {
-        setSelectedEvents(getEventsForDay(date));
-        setIsLoading(false);
-      }, 300);
-    }
+  const handleDateSelect = (date: Date) => {
+    setIsLoading(true);
+    setSelectedDate(date);
+    
+    // Simulate loading with a small delay
+    setTimeout(() => {
+      setDisplayedEvents(getEventsForDay(date));
+      setIsLoading(false);
+    }, 300);
   };
 
-  // Function to highlight dates with events
-  const isDayWithEvent = (day: Date) => {
-    return events.some(
-      event => format(event.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
-    );
+  const handlePrevMonth = () => {
+    setCurrentMonth(prevMonth => {
+      const newMonth = subMonths(prevMonth, 1);
+      setActiveMonth(newMonth.getMonth());
+      setActiveYear(newMonth.getFullYear());
+      return newMonth;
+    });
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prevMonth => {
+      const newMonth = addMonths(prevMonth, 1);
+      setActiveMonth(newMonth.getMonth());
+      setActiveYear(newMonth.getFullYear());
+      return newMonth;
+    });
+  };
+
+  const handleMonthClick = (monthIndex: number) => {
+    setCurrentMonth(new Date(activeYear, monthIndex, 1));
+    setActiveMonth(monthIndex);
   };
 
   // Initialize selected events
   useEffect(() => {
-    if (selectedDate) {
-      setSelectedEvents(getEventsForDay(selectedDate));
-    }
+    setDisplayedEvents(getEventsForDay(selectedDate));
   }, []);
 
-  // Animation variants
-  const containerVariants = {
-    hidden: (direction: "right" | "left") => ({
-      x: direction === "right" ? 100 : -100,
-      opacity: 0
-    }),
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 120,
-        damping: 20,
-        mass: 0.8,
-        when: "beforeChildren",
-        staggerChildren: 0.1
+  // Function to render calendar days
+  const renderCalendarDays = () => {
+    const datesWithEvents = getDatesWithEvents(currentMonth);
+    const monthStart = startOfMonth(currentMonth);
+    const totalDays = getDaysInMonth(monthStart);
+    const startWeekday = getDay(monthStart);
+    
+    const days = [];
+    let day = 1;
+
+    // Create blank cells for days before the start of the month
+    for (let i = 0; i < startWeekday; i++) {
+      days.push(
+        <div key={`empty-${i}`} className="h-12 w-12 flex items-center justify-center text-gray-400">
+          {/* Empty cell */}
+        </div>
+      );
+    }
+
+    // Create cells for days of the month
+    for (let i = 1; i <= totalDays; i++) {
+      const currentDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i);
+      const isSelected = isSameDay(currentDate, selectedDate);
+      const hasEvents = datesWithEvents.includes(i);
+      
+      let bgColor;
+      if (isSelected) {
+        bgColor = "bg-indigo-500"; // Selected day
+      } else if (hasEvents) {
+        // Give different colors to days with events (alternating)
+        const eventIndex = datesWithEvents.indexOf(i) % 3;
+        bgColor = eventIndex === 0 ? "bg-yellow-300" : 
+                 eventIndex === 1 ? "bg-purple-300" : "bg-blue-300";
+      } else {
+        bgColor = "bg-transparent"; // Regular day
       }
-    },
-    exit: (direction: "right" | "left") => ({
-      x: direction === "right" ? -100 : 100,
-      opacity: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-        mass: 0.8
-      }
-    })
+      
+      days.push(
+        <motion.div 
+          key={`day-${i}`}
+          whileHover={{ scale: 1.1 }}
+          className={`h-12 w-12 rounded-full flex items-center justify-center cursor-pointer
+                    ${hasEvents && !isSelected ? `${bgColor} text-gray-800` : ''}
+                    ${isSelected ? `${bgColor} text-white` : 'hover:bg-gray-100'}`}
+          onClick={() => handleDateSelect(currentDate)}
+        >
+          <span className="text-base">{i}</span>
+          {hasEvents && !isSelected && (
+            <motion.div 
+              className="absolute bottom-1 w-1 h-1 rounded-full bg-blue-500"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.2 }}
+            ></motion.div>
+          )}
+        </motion.div>
+      );
+    }
+    
+    return days;
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="md:col-span-1"
-      >
-        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-100 hover:border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary h-2"></div>
-          <CardHeader className="pb-2 pt-4">
-            <CardTitle className="text-2xl font-bold text-gray-800">Events Calendar</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleDateSelect}
-              className="rounded-md border-0 p-0 w-full"
-              modifiers={{
-                hasEvent: isDayWithEvent
-              }}
-              modifiersStyles={{
-                selected: {
-                  backgroundColor: "#1EAEDB",
-                  color: "white",
-                  fontWeight: "bold",
-                  transform: "scale(1.1)",
-                  borderRadius: "9999px",
-                },
-                hasEvent: {
-                  fontWeight: "bold",
-                  boxShadow: "inset 0 0 0 2px #1EAEDB",
-                  borderRadius: "9999px",
-                  color: "#1EAEDB"
-                },
-                today: {
-                  fontWeight: "bold",
-                  border: "2px solid #1EAEDB",
-                  borderRadius: "9999px",
-                }
-              }}
-              classNames={{
-                day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-100 rounded-full flex items-center justify-center mx-auto transition-all text-sm",
-                day_selected: "bg-argentina-blue text-white hover:bg-argentina-blue-dark rounded-full transform scale-110 transition-transform",
-                day_today: "border-2 border-argentina-blue text-argentina-blue font-bold rounded-full",
-                day_disabled: "text-gray-300",
-                day_outside: "text-gray-400 opacity-50",
-                day_range_middle: "bg-blue-50",
-                day_hidden: "invisible",
-                caption_label: "text-xl font-bold text-gray-800",
-                root: "w-full",
-                nav_button: "p-1 hover:bg-gray-100 rounded-full transition-colors",
-                nav_button_previous: "mr-auto",
-                nav_button_next: "ml-auto",
-                head_cell: "font-medium text-sm text-gray-600 w-10 h-10 flex items-center justify-center",
-                table: "w-full border-collapse",
-                row: "flex w-full mt-2 justify-around",
-                cell: "p-0 text-center relative h-10 w-10",
-                head_row: "flex w-full justify-around"
-              }}
-            />
+    <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+      <div className="flex h-full">
+        {/* Sidebar */}
+        <motion.div 
+          className="w-64 bg-gray-50 py-8 px-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Calendar</h2>
 
-            <div className="mt-6 space-y-2">
-              <h3 className="font-bold text-lg text-gray-800">Event Types</h3>
-              <div className="flex flex-wrap gap-2">
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400 }}>
-                  <Badge className="bg-blue-500 hover:bg-blue-600 cursor-pointer">Conference</Badge>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400 }}>
-                  <Badge className="bg-green-500 hover:bg-green-600 cursor-pointer">Workshop</Badge>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400 }}>
-                  <Badge className="bg-purple-500 hover:bg-purple-600 cursor-pointer">Social</Badge>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400 }}>
-                  <Badge className="bg-orange-500 hover:bg-orange-600 cursor-pointer">Hackathon</Badge>
-                </motion.div>
-              </div>
+          <div className="flex items-center justify-between mb-8">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-xl font-medium flex items-center"
+            >
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                className="mr-2 text-gray-500 hover:text-gray-800"
+                onClick={() => setActiveYear(prevYear => prevYear - 1)}
+              >
+                <ChevronLeft size={20} />
+              </motion.button>
+              {activeYear}
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                className="ml-2 text-gray-500 hover:text-gray-800"
+                onClick={() => setActiveYear(prevYear => prevYear + 1)}
+              >
+                <ChevronRight size={20} />
+              </motion.button>
+            </motion.div>
+          </div>
+
+          <div className="space-y-4">
+            {MONTHS.map((month, i) => (
+              <motion.div
+                key={month}
+                whileHover={{ x: 5 }}
+                className={`cursor-pointer py-2 px-3 text-base rounded-lg transition-colors
+                          ${activeMonth === i ? 'font-bold text-gray-900' : 'text-gray-500'}`}
+                onClick={() => handleMonthClick(i)}
+              >
+                {month}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Main Calendar Content */}
+        <div className="flex-1 p-8">
+          <div className="flex justify-between items-center mb-8">
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-2xl font-bold"
+            >
+              {format(selectedDate, "MMM d, EEE")}
+            </motion.div>
+            <div className="flex items-center space-x-4">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <Settings size={20} className="text-gray-500" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                className="p-2 rounded-full hover:bg-gray-100 relative"
+              >
+                <Bell size={20} className="text-gray-500" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                className="p-2 rounded-full hover:bg-gray-100"
+              >
+                <MoreVertical size={20} className="text-gray-500" />
+              </motion.button>
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+          </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="md:col-span-2"
-      >
-        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-100 h-full">
-          <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary h-2"></div>
-          <CardHeader className="border-b border-gray-100">
-            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center">
-              {selectedDate && (
-                <motion.div
-                  key={selectedDate.toString()}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {format(selectedDate, "MMMM d, yyyy")}
-                </motion.div>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <AnimatePresence mode="wait" custom={animationDirection}>
+          {/* Calendar Navigation */}
+          <div className="flex justify-between items-center mb-6">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="p-2 rounded-full hover:bg-gray-100"
+              onClick={handlePrevMonth}
+            >
+              <ChevronLeft size={24} className="text-gray-600" />
+            </motion.button>
+            
+            <h3 className="text-lg font-medium">
+              {format(currentMonth, "MMMM yyyy")}
+            </h3>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="p-2 rounded-full hover:bg-gray-100"
+              onClick={handleNextMonth}
+            >
+              <ChevronRight size={24} className="text-gray-600" />
+            </motion.button>
+          </div>
+
+          {/* Calendar Days Header */}
+          <div className="grid grid-cols-7 gap-1 mb-4">
+            {DAYS.map(day => (
+              <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-indigo-600">
+                {day}
+              </div>
+            ))}
+          </div>
+
+          {/* Calendar Days */}
+          <motion.div 
+            className="grid grid-cols-7 gap-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
+            transition={{ duration: 0.3 }}
+          >
+            {renderCalendarDays()}
+          </motion.div>
+
+          {/* Events Section */}
+          <div className="mt-8">
+            <AnimatePresence mode="wait">
               {isLoading ? (
                 <motion.div
                   key="loading"
@@ -270,17 +338,17 @@ const EnhancedCalendar = () => {
                     <div className="absolute h-12 w-12 rounded-full border-4 border-t-argentina-blue border-b-transparent border-l-transparent border-r-transparent animate-spin"></div>
                   </div>
                 </motion.div>
-              ) : selectedEvents.length > 0 ? (
+              ) : displayedEvents.length > 0 ? (
                 <motion.div
-                  key={selectedDate?.toString()}
-                  custom={animationDirection}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
+                  key="events"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {selectedEvents.map((event) => (
+                  <h3 className="text-lg font-medium mb-4">Events for {format(selectedDate, "MMM d, yyyy")}</h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    {displayedEvents.map(event => (
                       <EventCard key={event.id} {...event} />
                     ))}
                   </div>
@@ -310,9 +378,34 @@ const EnhancedCalendar = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </CardContent>
-        </Card>
-      </motion.div>
+            
+            <div className="mt-8 text-center text-sm text-gray-500">
+              <p>This month you have {events.filter(event => isSameMonth(event.date, currentMonth)).length} events to attend</p>
+              <p>Completed 0 events</p>
+            </div>
+
+            <div className="mt-8 flex justify-end space-x-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="w-12 h-12 rounded-full bg-purple-400 flex items-center justify-center shadow-lg"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.74a.75.75 0 0 1-.7.725l-.015.002h-.012a2.25 2.25 0 0 1-1.052-.173 2.25 2.25 0 0 1-.774-.468 2.25 2.25 0 0 1-.473-.96.75.75 0 0 1 .325-.948A49.645 49.645 0 0 1 11.25 2c1.678 0 3.33.09 4.965.265a.75.75 0 0 1 .655.655Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.152 13.848 1.341-2.682c.138-.275.167-.582.085-.874l-.818-2.874a2.25 2.25 0 0 0-1.501-1.515l-1.58-.454a.624.624 0 0 0-.717.352l-.462.992M14.152 13.848a3.75 3.75 0 0 1-3.944 2.29l-1.032-.232-1.871 1.871c-.12.12-.256.214-.403.277L5.24 18.527a.75.75 0 0 1-.936-.521l-.394-1.975c-.058-.291-.03-.592.083-.859l.292-.689" />
+                </svg>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                </svg>
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
