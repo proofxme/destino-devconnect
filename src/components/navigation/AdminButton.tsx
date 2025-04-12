@@ -24,7 +24,7 @@ export const AdminButton = ({ size = "default", className = "" }: AdminButtonPro
     >
       {size === "default" ? (
         <>
-          Admin Dashboard
+          Propose
           <ChevronRight className="ml-1 h-4 w-4" />
         </>
       ) : (
