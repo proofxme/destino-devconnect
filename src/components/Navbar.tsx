@@ -1,15 +1,23 @@
 
 import { useEffect, useState } from "react";
-import { Menu, X } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { SearchSpotlight } from "./SearchSpotlight";
 import { NavbarLogo } from "./navigation/NavbarLogo";
-import { NavMenu } from "./navigation/NavMenu";
 import { AdminButton } from "./navigation/AdminButton";
 import WalletButton from "./WalletButton";
 import { useWallet } from "@/context/WalletContext";
 import UserProfileDropdown from "./navigation/UserProfileDropdown";
+
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "Events", path: "/events" },
+  { name: "Accommodations", path: "/accommodations" },
+  { name: "Restaurants", path: "/restaurants" },
+  { name: "Activities", path: "/activities" },
+];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,50 +52,72 @@ const Navbar = () => {
         </div>
         
         <div className="hidden md:flex items-center space-x-4">
-          <NavMenu isScrolled={isScrolled} />
+          <div className="flex space-x-1">
+            {navItems.map((item) => (
+              <Button 
+                key={item.name}
+                variant="ghost" 
+                asChild
+                className={cn(
+                  "font-medium",
+                  isScrolled ? "text-devconnect-dark" : "text-white"
+                )}
+              >
+                <Link to={item.path}>{item.name}</Link>
+              </Button>
+            ))}
+          </div>
+          
           <SearchSpotlight />
           
           {isConnected && <AdminButton />}
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex items-center space-x-2">
           <SearchSpotlight />
           
-          {isConnected && <AdminButton size="sm" className="mr-2" />}
           {isConnected ? 
             <UserProfileDropdown /> : 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="mr-2"
-              onClick={() => window.location.href="/connect-wallet"}
-            >
-              Connect
-            </Button>
+            <WalletButton />
           }
           
-          <button 
-            className="ml-2"
+          <Button 
+            variant="ghost"
+            size="icon"
+            className={isScrolled ? "text-devconnect-dark" : "text-white"}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? (
-              <X className={isScrolled ? "text-devconnect-dark" : "text-white"} />
-            ) : (
-              <Menu className={isScrolled ? "text-devconnect-dark" : "text-white"} />
-            )}
-          </button>
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </Button>
         </div>
       </div>
       
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white w-full">
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            <NavMenu isScrolled={true} isMobile={true} onItemClick={() => setMobileMenuOpen(false)} />
+        <div className="md:hidden bg-white w-full shadow-lg">
+          <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className="text-devconnect-dark font-medium hover:text-argentina-blue transition-colors py-2 px-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
             {isConnected && (
-              <div className="text-xs text-gray-500 pt-2">
-                Connected wallet
-              </div>
+              <Button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.location.href="/admin";
+                }}
+                variant="outline"
+                size="sm"
+                className="mt-2 border-argentina-blue text-argentina-blue hover:bg-argentina-blue hover:text-white"
+              >
+                Admin Dashboard
+              </Button>
             )}
           </div>
         </div>

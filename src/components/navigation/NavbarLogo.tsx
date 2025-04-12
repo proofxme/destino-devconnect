@@ -13,7 +13,7 @@ export const NavbarLogo = ({ isScrolled }: NavbarLogoProps) => {
         Destino
       </span>
       <span className={cn(
-        "text-xl font-bold leading-tight transition-colors",
+        "text-xl font-bold leading-none transition-colors",
         isScrolled ? "text-devconnect-dark" : "text-white"
       )}>
         Devconnect
