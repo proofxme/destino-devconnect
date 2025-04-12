@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { CalendarRange, Utensils, Users, X } from "lucide-react";
@@ -6,6 +7,7 @@ import { useWallet } from "@/context/WalletContext";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import TripEventsList from "./TripEventsList";
 import TripRestaurantsList from "./TripRestaurantsList";
 import TripFriendsList from "./TripFriendsList";
@@ -93,7 +95,7 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
   }
 
   return (
-    <div className="w-full h-screen overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+    <ScrollArea className="w-full h-screen">
       <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white p-4 sticky top-0 z-10">
         <h2 className="text-xl font-bold">My Devconnect Trip</h2>
         {tripPlan && (
@@ -106,7 +108,7 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
       <div className="p-4">
         <DesktopTripContent tripPlan={tripPlan} loading={loading} />
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
@@ -147,9 +149,9 @@ const MobileTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =>
 
 const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) => {
   return (
-    <div className="space-y-6 overflow-auto">
+    <div className="space-y-6">
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h3 className="text-lg font-semibold flex items-center">
             <CalendarRange size={18} className="mr-2 text-argentina-blue" />
             My Events
@@ -160,7 +162,7 @@ const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =
       </section>
       
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h3 className="text-lg font-semibold flex items-center">
             <Utensils size={18} className="mr-2 text-argentina-blue" />
             Dining Plans
@@ -171,7 +173,7 @@ const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =
       </section>
       
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h3 className="text-lg font-semibold flex items-center">
             <Users size={18} className="mr-2 text-argentina-blue" />
             Friends Attending

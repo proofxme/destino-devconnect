@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex">
       {connected && isHomePage && !isMobile && (
-        <div className="sidebar-container min-w-[96] max-w-[96] overflow-auto">
+        <div className="sidebar-container w-80 border-r border-gray-200 bg-white">
           <TripSidebar />
         </div>
       )}
