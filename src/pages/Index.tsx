@@ -4,77 +4,90 @@ import CountdownTimer from "@/components/CountdownTimer";
 import ArgentinaMap from "@/components/ArgentinaMap";
 import EventCalendar from "@/components/EventCalendar";
 import CategorySection from "@/components/CategorySection";
+
 const Index = () => {
   // Sample accommodations data
-  const accommodations = [{
-    id: 1,
-    title: "Alvear Palace Hotel",
-    description: "Luxury hotel in the heart of Recoleta with elegant rooms and top-notch amenities.",
-    category: "Luxury",
-    imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-    location: "Recoleta, Buenos Aires",
-    rating: 4.8
-  }, {
-    id: 2,
-    title: "Palermo Soho Loft",
-    description: "Modern loft apartment in trendy Palermo Soho, walking distance to restaurants and bars.",
-    category: "Apartment",
-    imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
-    location: "Palermo, Buenos Aires",
-    rating: 4.5
-  }, {
-    id: 3,
-    title: "Ethereum Hacker House",
-    description: "Collaborative living space for Web3 developers with high-speed internet and workspaces.",
-    category: "Hacker House",
-    imageUrl: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
-    location: "Villa Crespo, Buenos Aires",
-    rating: 4.7
-  }, {
-    id: 4,
-    title: "Devconnect Developer Hostel",
-    description: "Budget-friendly hostel exclusively for Devconnect attendees with communal spaces.",
-    category: "Hostel",
-    imageUrl: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5",
-    location: "San Telmo, Buenos Aires",
-    rating: 4.3
-  }];
+  const accommodations = [
+    {
+      id: 1,
+      title: "Alvear Palace Hotel",
+      description: "Luxury hotel in the heart of Recoleta with elegant rooms and top-notch amenities.",
+      category: "Luxury",
+      imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      location: "Recoleta, Buenos Aires",
+      rating: 4.8
+    },
+    {
+      id: 2,
+      title: "Palermo Soho Loft",
+      description: "Modern loft apartment in trendy Palermo Soho, walking distance to restaurants and bars.",
+      category: "Apartment",
+      imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+      location: "Palermo, Buenos Aires",
+      rating: 4.5
+    },
+    {
+      id: 3,
+      title: "Ethereum Hacker House",
+      description: "Collaborative living space for Web3 developers with high-speed internet and workspaces.",
+      category: "Hacker House",
+      imageUrl: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+      location: "Villa Crespo, Buenos Aires",
+      rating: 4.7
+    },
+    {
+      id: 4,
+      title: "Devconnect Developer Hostel",
+      description: "Budget-friendly hostel exclusively for Devconnect attendees with communal spaces.",
+      category: "Hostel",
+      imageUrl: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5",
+      location: "San Telmo, Buenos Aires",
+      rating: 4.3
+    }
+  ];
 
   // Sample restaurants data
-  const restaurants = [{
-    id: 1,
-    title: "Don Julio",
-    description: "Famous steakhouse offering premium cuts of Argentine beef in a rustic setting.",
-    category: "Steakhouse",
-    imageUrl: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
-    location: "Palermo, Buenos Aires",
-    rating: 4.9
-  }, {
-    id: 2,
-    title: "El Preferido",
-    description: "Historic local restaurant serving Argentine classics and Spanish-influenced dishes.",
-    category: "Argentine",
-    imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-    location: "Palermo, Buenos Aires",
-    rating: 4.5
-  }, {
-    id: 3,
-    title: "Gran Dabbang",
-    description: "Fusion restaurant combining Southeast Asian flavors with local Argentine ingredients.",
-    category: "Fusion",
-    imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
-    location: "Palermo, Buenos Aires",
-    rating: 4.7
-  }, {
-    id: 4,
-    title: "Web3 Café",
-    description: "Tech-themed café with NFT art displays and crypto-friendly payment options.",
-    category: "Café",
-    imageUrl: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
-    location: "Recoleta, Buenos Aires",
-    rating: 4.4
-  }];
-  return <div className="min-h-screen flex flex-col">
+  const restaurants = [
+    {
+      id: 1,
+      title: "Don Julio",
+      description: "Famous steakhouse offering premium cuts of Argentine beef in a rustic setting.",
+      category: "Steakhouse",
+      imageUrl: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
+      location: "Palermo, Buenos Aires",
+      rating: 4.9
+    },
+    {
+      id: 2,
+      title: "El Preferido",
+      description: "Historic local restaurant serving Argentine classics and Spanish-influenced dishes.",
+      category: "Argentine",
+      imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+      location: "Palermo, Buenos Aires",
+      rating: 4.5
+    },
+    {
+      id: 3,
+      title: "Gran Dabbang",
+      description: "Fusion restaurant combining Southeast Asian flavors with local Argentine ingredients.",
+      category: "Fusion",
+      imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0",
+      location: "Palermo, Buenos Aires",
+      rating: 4.7
+    },
+    {
+      id: 4,
+      title: "Web3 Café",
+      description: "Tech-themed café with NFT art displays and crypto-friendly payment options.",
+      category: "Café",
+      imageUrl: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
+      location: "Recoleta, Buenos Aires",
+      rating: 4.4
+    }
+  ];
+
+  return (
+    <div className="relative">
       <div className="bg-gradient-to-br from-argentina-blue to-devconnect-primary relative">
         <Navbar />
         <div className="container mx-auto pt-32 pb-20 px-[16px]">
@@ -127,9 +140,19 @@ const Index = () => {
         </div>
       </section>
 
-      <CategorySection title="Places to Stay" description="Find the perfect accommodation for your Devconnect trip, from luxury hotels to hacker houses" items={accommodations} viewAllLink="/accommodations" />
+      <CategorySection 
+        title="Places to Stay" 
+        description="Find the perfect accommodation for your Devconnect trip, from luxury hotels to hacker houses" 
+        items={accommodations} 
+        viewAllLink="/accommodations" 
+      />
 
-      <CategorySection title="Where to Eat" description="Discover the best restaurants, cafés, and bars in Buenos Aires" items={restaurants} viewAllLink="/restaurants" />
+      <CategorySection 
+        title="Where to Eat" 
+        description="Discover the best restaurants, cafés, and bars in Buenos Aires" 
+        items={restaurants} 
+        viewAllLink="/restaurants" 
+      />
 
       <section className="py-16 bg-devconnect-dark text-white">
         <div className="container mx-auto px-4">
@@ -146,6 +169,8 @@ const Index = () => {
       </section>
 
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
