@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -52,10 +53,12 @@ const Navbar = () => {
         : "bg-transparent py-4"
     )}>
       <div className="container mx-auto px-2 sm:px-4 flex justify-between items-center">
+        {/* Logo */}
         <div className="flex items-center">
           <NavbarLogo isScrolled={isScrolled} />
         </div>
         
+        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -71,7 +74,7 @@ const Navbar = () => {
                 <ChevronDown size={16} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white">
+            <DropdownMenuContent align="end" className="bg-white z-50">
               {navItems.map((item) => (
                 <DropdownMenuItem key={item.name} asChild>
                   <Link to={item.path} className="w-full">
@@ -88,18 +91,33 @@ const Navbar = () => {
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
-        <div className="lg:hidden flex items-center gap-1">
-          <SearchSpotlight />
+        {/* Mobile Navigation */}
+        <div className="lg:hidden flex items-center gap-2">
+          <div className="flex-shrink-0">
+            {isConnected ? 
+              <UserProfileDropdown /> : 
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="px-2 border-white text-white hover:bg-white/10"
+                onClick={() => window.location.href="/wallet"}
+              >
+                Connect
+              </Button>
+            }
+          </div>
           
-          {isConnected ? 
-            <UserProfileDropdown /> : 
-            <WalletButton />
-          }
+          <div className="flex-shrink-0">
+            <SearchSpotlight />
+          </div>
           
           <Button 
             variant="ghost"
             size="icon"
-            className={isScrolled ? "text-devconnect-dark" : "text-white"}
+            className={cn(
+              "flex-shrink-0", 
+              isScrolled ? "text-devconnect-dark" : "text-white"
+            )}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -107,6 +125,7 @@ const Navbar = () => {
         </div>
       </div>
       
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white w-full shadow-lg">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">

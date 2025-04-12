@@ -11,6 +11,7 @@ import {
   CommandList 
 } from "@/components/ui/command";
 import { Button } from "./ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { SearchItem, searchItems, addToList, addToFavorites, subscribeToItem } from "@/api/searchApi";
 
 export function SearchSpotlight() {
@@ -18,6 +19,7 @@ export function SearchSpotlight() {
   const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   // Search for items when query changes
@@ -100,16 +102,22 @@ export function SearchSpotlight() {
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 p-0 md:h-10 md:w-60 md:justify-start md:px-3 md:py-2 border-argentina-blue"
+        size={isMobile ? "icon" : "default"}
+        className={isMobile 
+          ? "h-8 w-8 p-0 border-white/60" 
+          : "relative h-9 w-9 md:h-10 md:w-60 md:justify-start md:px-3 md:py-2 border-argentina-blue"
+        }
         onClick={() => setOpen(true)}
       >
-        <Search className="h-4 w-4 md:mr-2" />
-        <span className="hidden md:inline-flex">Search...</span>
-        <kbd className="hidden md:inline-flex absolute right-1.5 top-1.5 pointer-events-none h-7 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
-          <span className="text-xs">⌘</span>K
-        </kbd>
+        <Search className={isMobile ? "h-4 w-4" : "h-4 w-4 md:mr-2"} />
+        {!isMobile && <span className="hidden md:inline-flex">Search...</span>}
+        {!isMobile && (
+          <kbd className="hidden md:inline-flex absolute right-1.5 top-1.5 pointer-events-none h-7 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
+            <span className="text-xs">⌘</span>K
+          </kbd>
+        )}
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog open={open} onOpenChange={setOpen} className="z-50">
         <CommandInput
           placeholder="Search events, places, activities..."
           value={searchQuery}
