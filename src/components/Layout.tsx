@@ -6,6 +6,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import TripSidebar from "./trip/TripSidebar";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SidebarProvider } from "./ui/sidebar";
+import AppSidebar from "./AppSidebar";
+import Navbar from "./Navbar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -26,31 +29,55 @@ const Layout: React.FC<LayoutProps> = ({
     setSidebarCollapsed(prev => !prev);
   };
 
-  return (
-    <div className="min-h-screen">
-      {connected && isHomePage && !isMobile && (
-        <div className={`fixed top-0 left-0 h-screen border-r border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-16' : 'w-80'}`}>
-          <div className="absolute -right-4 top-4 z-20">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="h-8 w-8 rounded-full border shadow-sm bg-white" 
-              onClick={toggleSidebar}
-              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-            </Button>
-          </div>
-          <TripSidebar collapsed={sidebarCollapsed} />
-        </div>
-      )}
-      <div className={`${connected && isHomePage && !isMobile ? (sidebarCollapsed ? 'ml-16' : 'ml-80') : ''} transition-all duration-300 ease-in-out`}>
-        <div className="container mx-auto px-0">
-          {connected && isHomePage && isMobile && <TripSidebar isMobile />}
-          {children}
+  // For mobile, we don't show the main sidebar
+  if (isMobile) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="pt-16">
+          {connected && isHomePage && <TripSidebar isMobile />}
+          <main>{children}</main>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  // For desktop
+  return (
+    <SidebarProvider defaultOpen={!sidebarCollapsed}>
+      <div className="min-h-screen flex w-full">
+        <div className="w-auto z-40">
+          <AppSidebar />
+        </div>
+        
+        <div className="flex-1">
+          <Navbar />
+          
+          <div className="pt-16 flex">
+            {connected && isHomePage && (
+              <div className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-16' : 'w-80'}`}>
+                <div className="absolute -left-4 top-4 z-20">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-8 w-8 rounded-full border shadow-sm bg-white" 
+                    onClick={toggleSidebar}
+                    aria-label={sidebarCollapsed ? "Expand trip sidebar" : "Collapse trip sidebar"}
+                  >
+                    {sidebarCollapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                  </Button>
+                </div>
+                <TripSidebar collapsed={sidebarCollapsed} />
+              </div>
+            )}
+            
+            <main className={`flex-1 ${connected && isHomePage ? (sidebarCollapsed ? 'mr-16' : 'mr-80') : ''} transition-all duration-300 ease-in-out`}>
+              {children}
+            </main>
+          </div>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 

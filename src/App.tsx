@@ -11,6 +11,8 @@ import Events from "./pages/Events";
 import Accommodations from "./pages/Accommodations";
 import Restaurants from "./pages/Restaurants";
 import Activities from "./pages/Activities";
+import Attendants from "./pages/Attendants";
+import Sponsors from "./pages/Sponsors";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +32,8 @@ const App = () => (
               <Route path="/accommodations" element={<Accommodations />} />
               <Route path="/restaurants" element={<Restaurants />} />
               <Route path="/activities" element={<Activities />} />
+              <Route path="/attendants" element={<Attendants />} />
+              <Route path="/sponsors" element={<Sponsors />} />
               <Route path="/admin" element={<AdminDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
