@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ChevronDown } from 'lucide-react';
@@ -10,6 +9,12 @@ import { AdminButton } from "./navigation/AdminButton";
 import WalletButton from "./WalletButton";
 import { useWallet } from "@/context/WalletContext";
 import UserProfileDropdown from "./navigation/UserProfileDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -52,22 +57,30 @@ const Navbar = () => {
         </div>
         
         <div className="hidden lg:flex items-center space-x-2">
-          <div className="flex flex-wrap space-x-1">
-            {navItems.map((item) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button 
-                key={item.name}
                 variant="ghost" 
-                asChild
-                size="sm"
                 className={cn(
-                  "font-medium",
+                  "font-medium flex items-center gap-1",
                   isScrolled ? "text-devconnect-dark" : "text-white"
                 )}
+                size="sm"
               >
-                <Link to={item.path}>{item.name}</Link>
+                Navigation
+                <ChevronDown size={16} />
               </Button>
-            ))}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-white">
+              {navItems.map((item) => (
+                <DropdownMenuItem key={item.name} asChild>
+                  <Link to={item.path} className="w-full">
+                    {item.name}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <SearchSpotlight />
           
