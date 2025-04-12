@@ -19,6 +19,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navigationLinks = [
   { name: "Home", path: "/" },
@@ -40,6 +41,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { connected: isConnected } = useWallet();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,10 +62,10 @@ const Navbar = () => {
     <nav className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300",
       isScrolled 
-        ? "bg-gray-800/95 shadow-md py-3" 
+        ? "bg-gray-800/95 shadow-md py-2" 
         : "bg-gray-800 py-3"
     )}>
-      <div className="container mx-auto px-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 flex justify-between items-center h-14">
         {/* Logo */}
         <div className="flex items-center">
           <NavbarLogo isScrolled={false} />

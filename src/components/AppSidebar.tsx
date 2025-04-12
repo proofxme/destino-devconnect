@@ -55,7 +55,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar>
-      <div className="py-4 px-3 border-b">
+      <div className="py-4 px-3 border-b border-sidebar-border">
         <NavbarLogo isScrolled={true} />
       </div>
       
@@ -64,7 +64,7 @@ const AppSidebar = () => {
           {/* Explore Section */}
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Compass className="mr-2" />
+              <Compass className="mr-2 h-4 w-4" />
               Explore
             </SidebarGroupLabel>
             <SidebarMenu>
@@ -79,7 +79,7 @@ const AppSidebar = () => {
                       "flex items-center",
                       isActive(link.path) && "font-medium"
                     )}>
-                      <link.icon className="mr-2" />
+                      <link.icon className="mr-2 h-4 w-4" />
                       <span>{link.name}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -91,7 +91,7 @@ const AppSidebar = () => {
           {/* Attendants Section */}
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Users className="mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Attendants
             </SidebarGroupLabel>
             <SidebarMenu>
@@ -106,7 +106,7 @@ const AppSidebar = () => {
                       "flex items-center",
                       isActive(link.path) && "font-medium"
                     )}>
-                      <link.icon className="mr-2" />
+                      <link.icon className="mr-2 h-4 w-4" />
                       <span>{link.name}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -118,7 +118,7 @@ const AppSidebar = () => {
           {/* Sponsors Section */}
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Handshake className="mr-2" />
+              <Handshake className="mr-2 h-4 w-4" />
               Sponsors
             </SidebarGroupLabel>
             <SidebarMenu>
@@ -133,7 +133,7 @@ const AppSidebar = () => {
                       "flex items-center",
                       isActive(link.path) && "font-medium"
                     )}>
-                      <link.icon className="mr-2" />
+                      <link.icon className="mr-2 h-4 w-4" />
                       <span>{link.name}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -151,7 +151,7 @@ const AppSidebar = () => {
                   tooltip="Help & FAQ"
                 >
                   <a href="#" className="flex items-center">
-                    <HelpCircle className="mr-2" />
+                    <HelpCircle className="mr-2 h-4 w-4" />
                     <span>Help & FAQ</span>
                   </a>
                 </SidebarMenuButton>
@@ -165,7 +165,7 @@ const AppSidebar = () => {
                     tooltip="Admin"
                   >
                     <Link to="/admin" className="flex items-center">
-                      <Settings className="mr-2" />
+                      <Settings className="mr-2 h-4 w-4" />
                       <span>Admin Dashboard</span>
                     </Link>
                   </SidebarMenuButton>

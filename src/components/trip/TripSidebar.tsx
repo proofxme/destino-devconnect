@@ -63,7 +63,7 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed =
 
   if (isMobile) {
     return (
-      <div className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-4">
+      <div className="flex items-center justify-between bg-sidebar p-2 rounded-lg mb-4 shadow-sm border border-sidebar-border">
         <Button 
           onClick={() => setOpen(true)}
           className="flex items-center space-x-2 bg-argentina-blue text-white hover:bg-argentina-blue-dark"
