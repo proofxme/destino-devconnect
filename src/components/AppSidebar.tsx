@@ -13,18 +13,9 @@ import {
   Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton
-} from "@/components/ui/sidebar";
-import { NavbarLogo } from "./navigation/NavbarLogo";
-import { useWallet } from "@/context/WalletContext";
 import { ScrollArea } from "./ui/scroll-area";
+import { useWallet } from "@/context/WalletContext";
+import { NavbarLogo } from "./navigation/NavbarLogo";
 
 const AppSidebar = () => {
   const location = useLocation();
@@ -54,128 +45,118 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar variant="sidebar">
-      <div className="py-4 px-3 border-b border-sidebar-border bg-sidebar">
+    <div className="w-64 min-h-screen border-r border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-800 flex flex-col">
+      <div className="py-4 px-3 border-b border-gray-200 dark:border-gray-800">
         <NavbarLogo isScrolled={true} />
       </div>
       
-      <SidebarContent className="bg-sidebar">
-        <ScrollArea className="h-[calc(100vh-80px)]">
+      <ScrollArea className="h-[calc(100vh-80px)] flex-1">
+        <div className="px-3 py-4">
           {/* Explore Section */}
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              <Compass className="mr-2" />
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-2 flex items-center">
+              <Compass className="h-4 w-4 mr-2" />
               Explore
-            </SidebarGroupLabel>
-            <SidebarMenu>
+            </h3>
+            <nav className="space-y-1">
               {exploreLinks.map((link) => (
-                <SidebarMenuItem key={link.path}>
-                  <SidebarMenuButton 
-                    asChild
-                    isActive={isActive(link.path)}
-                    tooltip={link.name}
-                  >
-                    <Link to={link.path} className={cn(
-                      "flex items-center",
-                      isActive(link.path) && "font-medium"
-                    )}>
-                      <link.icon className="mr-2" />
-                      <span>{link.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={cn(
+                    "flex items-center px-2 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive(link.path)
+                      ? "bg-argentina-blue text-white"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  )}
+                >
+                  <link.icon className="h-5 w-5 mr-3" />
+                  <span>{link.name}</span>
+                </Link>
               ))}
-            </SidebarMenu>
-          </SidebarGroup>
+            </nav>
+          </div>
 
           {/* Attendants Section */}
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              <Users className="mr-2" />
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-2 flex items-center">
+              <Users className="h-4 w-4 mr-2" />
               Attendants
-            </SidebarGroupLabel>
-            <SidebarMenu>
+            </h3>
+            <nav className="space-y-1">
               {attendantsLinks.map((link) => (
-                <SidebarMenuItem key={link.path}>
-                  <SidebarMenuButton 
-                    asChild
-                    isActive={isActive(link.path)}
-                    tooltip={link.name}
-                  >
-                    <Link to={link.path} className={cn(
-                      "flex items-center",
-                      isActive(link.path) && "font-medium"
-                    )}>
-                      <link.icon className="mr-2" />
-                      <span>{link.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={cn(
+                    "flex items-center px-2 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive(link.path)
+                      ? "bg-argentina-blue text-white"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  )}
+                >
+                  <link.icon className="h-5 w-5 mr-3" />
+                  <span>{link.name}</span>
+                </Link>
               ))}
-            </SidebarMenu>
-          </SidebarGroup>
+            </nav>
+          </div>
 
           {/* Sponsors Section */}
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              <Handshake className="mr-2" />
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-2 flex items-center">
+              <Handshake className="h-4 w-4 mr-2" />
               Sponsors
-            </SidebarGroupLabel>
-            <SidebarMenu>
+            </h3>
+            <nav className="space-y-1">
               {sponsorsLinks.map((link) => (
-                <SidebarMenuItem key={link.path}>
-                  <SidebarMenuButton 
-                    asChild
-                    isActive={isActive(link.path)}
-                    tooltip={link.name}
-                  >
-                    <Link to={link.path} className={cn(
-                      "flex items-center",
-                      isActive(link.path) && "font-medium"
-                    )}>
-                      <link.icon className="mr-2" />
-                      <span>{link.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={cn(
+                    "flex items-center px-2 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive(link.path)
+                      ? "bg-argentina-blue text-white"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  )}
+                >
+                  <link.icon className="h-5 w-5 mr-3" />
+                  <span>{link.name}</span>
+                </Link>
               ))}
-            </SidebarMenu>
-          </SidebarGroup>
+            </nav>
+          </div>
 
           {/* Help Section */}
-          <SidebarGroup>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild
-                  tooltip="Help & FAQ"
-                >
-                  <a href="#" className="flex items-center">
-                    <HelpCircle className="mr-2" />
-                    <span>Help & FAQ</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+          <div>
+            <nav className="space-y-1">
+              <a 
+                href="#" 
+                className="flex items-center px-2 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <HelpCircle className="h-5 w-5 mr-3" />
+                <span>Help & FAQ</span>
+              </a>
 
               {connected && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    asChild
-                    isActive={isActive("/admin")}
-                    tooltip="Admin"
-                  >
-                    <Link to="/admin" className="flex items-center">
-                      <Settings className="mr-2" />
-                      <span>Admin Dashboard</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link
+                  to="/admin"
+                  className={cn(
+                    "flex items-center px-2 py-2 rounded-md text-sm font-medium transition-colors",
+                    isActive("/admin")
+                      ? "bg-argentina-blue text-white"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  )}
+                >
+                  <Settings className="h-5 w-5 mr-3" />
+                  <span>Admin Dashboard</span>
+                </Link>
               )}
-            </SidebarMenu>
-          </SidebarGroup>
-        </ScrollArea>
-      </SidebarContent>
-    </Sidebar>
+            </nav>
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
 
