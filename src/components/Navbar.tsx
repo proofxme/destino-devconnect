@@ -1,18 +1,20 @@
 
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Wallet, ChevronRight } from 'lucide-react';
+import { Menu, X, Wallet, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { CityFilter } from "./CityFilter";
 import { SearchSpotlight } from "./SearchSpotlight";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
+  const [navDropdownOpen, setNavDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,18 +103,36 @@ const Navbar = () => {
         </Link>
         
         <div className="hidden md:flex items-center space-x-6">
-          {navItems.map((item) => (
-            <Link 
-              key={item.name}
-              to={item.path}
-              className={cn(
-                "font-medium hover:text-argentina-blue transition-colors",
-                isScrolled ? "text-devconnect-dark" : "text-white"
-              )}
-            >
-              {item.name}
-            </Link>
-          ))}
+          <Collapsible 
+            open={navDropdownOpen} 
+            onOpenChange={setNavDropdownOpen}
+            className="relative"
+          >
+            <CollapsibleTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className={cn(
+                  "flex items-center gap-1 font-medium",
+                  isScrolled ? "text-devconnect-dark" : "text-white"
+                )}
+              >
+                Navigation
+                <ChevronDown size={16} className={cn("transition-transform", navDropdownOpen && "rotate-180")} />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="absolute top-full left-0 z-50 mt-2 w-48 bg-white rounded-md shadow-lg border">
+              {navItems.map((item) => (
+                <Link 
+                  key={item.name}
+                  to={item.path}
+                  className="block px-4 py-2 text-sm text-devconnect-dark hover:bg-gray-100"
+                  onClick={() => setNavDropdownOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
           
           <CityFilter />
           <SearchSpotlight />
