@@ -1,9 +1,10 @@
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
 import ArgentinaMap from "@/components/ArgentinaMap";
-import EventCalendar from "@/components/EventCalendar";
 import CategorySection from "@/components/CategorySection";
+import EnhancedCalendar from "@/components/calendar/EnhancedCalendar";
 
 const Index = () => {
   // Sample accommodations data
@@ -135,7 +136,7 @@ const Index = () => {
             </p>
           </div>
           <div className="max-w-6xl mx-auto">
-            <EventCalendar />
+            <EnhancedCalendar />
           </div>
         </div>
       </section>
