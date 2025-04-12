@@ -46,18 +46,19 @@ const Navbar = () => {
         ? "bg-white shadow-md py-2" 
         : "bg-transparent py-4"
     )}>
-      <div className="container mx-auto px-4 flex justify-between items-center">
+      <div className="container mx-auto px-2 sm:px-4 flex justify-between items-center">
         <div className="flex items-center">
           <NavbarLogo isScrolled={isScrolled} />
         </div>
         
-        <div className="hidden md:flex items-center space-x-4">
-          <div className="flex space-x-1">
+        <div className="hidden lg:flex items-center space-x-2">
+          <div className="flex flex-wrap space-x-1">
             {navItems.map((item) => (
               <Button 
                 key={item.name}
                 variant="ghost" 
                 asChild
+                size="sm"
                 className={cn(
                   "font-medium",
                   isScrolled ? "text-devconnect-dark" : "text-white"
@@ -74,7 +75,7 @@ const Navbar = () => {
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
-        <div className="md:hidden flex items-center space-x-2">
+        <div className="lg:hidden flex items-center gap-1">
           <SearchSpotlight />
           
           {isConnected ? 
@@ -88,13 +89,13 @@ const Navbar = () => {
             className={isScrolled ? "text-devconnect-dark" : "text-white"}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
       </div>
       
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white w-full shadow-lg">
+        <div className="lg:hidden bg-white w-full shadow-lg">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
             {navItems.map((item) => (
               <Link
