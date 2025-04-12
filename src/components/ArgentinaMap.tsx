@@ -125,21 +125,20 @@ const ArgentinaMap = () => {
         <div className="grid grid-cols-1 md:grid-cols-3">
           <div className="md:col-span-2 h-[500px] md:h-[540px]">
             <MapContainer 
-              center={[-34.6037, -58.3816]} 
-              zoom={13} 
-              scrollWheelZoom={false}
               style={{ height: "100%", width: "100%" }}
+              scrollWheelZoom={false}
+              defaultCenter={[-34.6037, -58.3816] as LatLngExpression} 
+              defaultZoom={13}
             >
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               
               {filteredPOIs.map((poi) => (
                 <Marker 
                   key={poi.id}
                   position={poi.position}
-                  icon={getIcon(poi.category)}
                   eventHandlers={{
                     click: () => {
                       setSelectedPOI(poi);

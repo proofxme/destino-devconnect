@@ -126,7 +126,7 @@ const EventCalendar = () => {
             hasEvent: (date) => isDayWithEvent(date)
           }}
           styles={{
-            day_hasEvent: { fontWeight: "bold", textDecoration: "underline" }
+            day: { hasEvent: { fontWeight: "bold", textDecoration: "underline" } }
           }}
         />
         <div className="mt-4">
