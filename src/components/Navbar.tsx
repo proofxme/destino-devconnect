@@ -1,17 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Wallet, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-
-// Add ethereum property to Window interface
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -20,7 +12,6 @@ const Navbar = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const navigate = useNavigate();
 
-  // Check if wallet is already connected on component mount
   useEffect(() => {
     const connected = localStorage.getItem("wallet-connected") === "true";
     const address = localStorage.getItem("wallet-address");
@@ -47,13 +38,11 @@ const Navbar = () => {
 
   const connectWallet = async () => {
     try {
-      // Check if MetaMask is available
       if (window.ethereum) {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setWalletAddress(accounts[0]);
         setIsConnected(true);
         
-        // Store connection in localStorage
         localStorage.setItem("wallet-connected", "true");
         localStorage.setItem("wallet-address", accounts[0]);
         
@@ -108,7 +97,6 @@ const Navbar = () => {
           </span>
         </Link>
         
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => (
             <Link 
@@ -154,7 +142,6 @@ const Navbar = () => {
           )}
         </div>
         
-        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
           {isConnected && (
             <Button
@@ -189,7 +176,6 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white w-full">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
