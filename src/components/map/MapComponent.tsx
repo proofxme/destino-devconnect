@@ -13,12 +13,12 @@ const MapComponent = ({ pois, onSelectPOI }: MapComponentProps) => {
     <div className="h-full w-full">
       <MapContainer 
         className="h-full w-full"
-        center={DEFAULT_CENTER}
+        center={DEFAULT_CENTER as [number, number]}
         zoom={DEFAULT_ZOOM}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
         {pois.map((poi) => (
