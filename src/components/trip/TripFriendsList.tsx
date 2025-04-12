@@ -1,8 +1,8 @@
 
 import React from "react";
-import { Friend } from "@/api/tripApi";
+import { Friend, TripEvent } from "@/api/tripApi";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface TripFriendsListProps {
@@ -39,17 +39,19 @@ const TripFriendsList: React.FC<TripFriendsListProps> = ({ friends, loading }) =
     <div className="space-y-3">
       {friends.map((friend) => (
         <div key={friend.id} className="flex items-center p-2 rounded-lg hover:bg-gray-50">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Avatar className="h-10 w-10 mr-3 border border-gray-200">
-                <AvatarImage src={friend.avatarUrl} alt={friend.name} />
-                <AvatarFallback>{friend.name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{friend.wallet}</p>
-            </TooltipContent>
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Avatar className="h-10 w-10 mr-3 border border-gray-200">
+                  <AvatarImage src={friend.avatarUrl} alt={friend.name} />
+                  <AvatarFallback>{friend.name.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{friend.wallet}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div>
             <div className="font-medium text-sm">{friend.name}</div>
             <div className="text-xs text-gray-500">
