@@ -50,7 +50,7 @@ const Navbar = () => {
       "fixed top-0 w-full z-50 transition-all duration-300",
       isScrolled 
         ? "bg-white shadow-md py-2" 
-        : "bg-transparent py-4"
+        : "bg-black/30 backdrop-blur-md py-4"
     )}>
       <div className="container mx-auto px-2 sm:px-4 flex justify-between items-center">
         {/* Logo */}
@@ -99,7 +99,10 @@ const Navbar = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                className="px-2 border-white text-white hover:bg-white/10"
+                className={cn(
+                  "px-2 border-white text-white hover:bg-white/10",
+                  !isScrolled && "bg-black/20"
+                )}
                 onClick={() => window.location.href="/wallet"}
               >
                 Connect
@@ -127,13 +130,13 @@ const Navbar = () => {
       
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white w-full shadow-lg">
+        <div className="lg:hidden bg-black/80 backdrop-blur-md w-full shadow-lg">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-devconnect-dark font-medium hover:text-argentina-blue transition-colors py-2 px-2"
+                className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}

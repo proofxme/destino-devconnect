@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Heart, ListPlus, BookmarkPlus } from "lucide-react";
@@ -22,7 +21,6 @@ export function SearchSpotlight() {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  // Search for items when query changes
   useEffect(() => {
     const fetchResults = async () => {
       if (searchQuery.length < 2) {
@@ -43,7 +41,6 @@ export function SearchSpotlight() {
       }
     };
 
-    // Debounce search for performance
     const debounceTimer = setTimeout(() => {
       fetchResults();
     }, 300);
@@ -53,7 +50,6 @@ export function SearchSpotlight() {
     };
   }, [searchQuery]);
 
-  // Set up keyboard shortcut to open search dialog
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -104,7 +100,7 @@ export function SearchSpotlight() {
         variant="outline"
         size={isMobile ? "icon" : "default"}
         className={isMobile 
-          ? "h-8 w-8 p-0 border-white/60" 
+          ? "h-8 w-8 p-0 border-white/60 bg-black/20" 
           : "relative h-9 w-9 md:h-10 md:w-60 md:justify-start md:px-3 md:py-2 border-argentina-blue"
         }
         onClick={() => setOpen(true)}
@@ -117,7 +113,7 @@ export function SearchSpotlight() {
           </kbd>
         )}
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen} className="z-50">
+      <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
           placeholder="Search events, places, activities..."
           value={searchQuery}
