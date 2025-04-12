@@ -32,7 +32,7 @@ const Layout: React.FC<LayoutProps> = ({
     return (
       <div className="min-h-screen">
         <Navbar />
-        <div className="pt-16">
+        <div className="pt-14">
           {connected && isHomePage && <TripSidebar isMobile />}
           <main>{children}</main>
         </div>
@@ -45,9 +45,9 @@ const Layout: React.FC<LayoutProps> = ({
     <div className="min-h-screen">
       <Navbar />
       
-      <div className="pt-16 flex">
+      <div className="pt-14 flex">
         {connected && isHomePage && (
-          <div className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-16' : 'w-80'}`}>
+          <div className={`fixed top-14 right-0 h-[calc(100vh-56px)] border-l border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-16' : 'w-80'}`}>
             <div className="absolute -left-4 top-4 z-20">
               <Button 
                 variant="outline" 

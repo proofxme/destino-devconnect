@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Heart, ListPlus, BookmarkPlus } from "lucide-react";
@@ -97,19 +98,19 @@ export function SearchSpotlight() {
   return (
     <>
       <Button
-        variant="outline"
-        size={isMobile ? "icon" : "default"}
+        variant="ghost"
+        size={isMobile ? "icon" : "sm"}
         className={isMobile 
-          ? "h-8 w-8 p-0 border-white/60 bg-black/20" 
-          : "relative h-9 w-9 md:h-10 md:w-60 md:justify-start md:px-3 md:py-2 border-argentina-blue"
+          ? "h-7 w-7 p-0" 
+          : "relative h-8 w-8 md:w-48 md:justify-start md:px-3 md:py-1 text-sm"
         }
         onClick={() => setOpen(true)}
       >
         <Search className={isMobile ? "h-4 w-4" : "h-4 w-4 md:mr-2"} />
         {!isMobile && <span className="hidden md:inline-flex">Search...</span>}
         {!isMobile && (
-          <kbd className="hidden md:inline-flex absolute right-1.5 top-1.5 pointer-events-none h-7 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100">
-            <span className="text-xs">⌘</span>K
+          <kbd className="hidden md:inline-flex absolute right-1.5 top-1.5 pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium opacity-100">
+            <span className="text-[10px]">⌘</span>K
           </kbd>
         )}
       </Button>

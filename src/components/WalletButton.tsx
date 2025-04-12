@@ -16,8 +16,8 @@ const WalletButton = () => {
   return (
     <Button 
       variant="outline" 
-      className="border-white text-white hover:bg-white/10 bg-black/20"
-      size={isMobile ? "sm" : "default"}
+      className="border-white/70 text-white hover:bg-white/10 bg-black/10 h-8 text-sm"
+      size={isMobile ? "sm" : "sm"}
       onClick={connect} 
       disabled={connecting}
     >

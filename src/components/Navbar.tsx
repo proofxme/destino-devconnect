@@ -60,8 +60,8 @@ const Navbar = () => {
     <nav className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300",
       isScrolled 
-        ? "bg-white shadow-md py-2" 
-        : "bg-black/30 backdrop-blur-md py-4"
+        ? "bg-white shadow-md py-1" 
+        : "bg-black/40 backdrop-blur-md py-2"
     )}>
       <div className="container mx-auto px-2 sm:px-4 flex justify-between items-center">
         {/* Logo */}
@@ -70,26 +70,26 @@ const Navbar = () => {
         </div>
         
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center space-x-2">
+        <div className="hidden lg:flex items-center space-x-1">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "font-medium", 
+                    "h-8 px-2 font-medium text-sm", 
                     isScrolled ? "text-devconnect-dark" : "text-white"
                   )}
                 >
                   Explore
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <ul className="grid w-[400px] gap-2 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {navigationLinks.map((item) => (
                       <li key={item.path}>
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -103,20 +103,20 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "font-medium", 
+                    "h-8 px-2 font-medium text-sm", 
                     isScrolled ? "text-devconnect-dark" : "text-white"
                   )}
                 >
                   Attendants
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-3 p-4">
+                  <ul className="grid w-[200px] gap-2 p-3">
                     {attendantLinks.map((item) => (
                       <li key={item.path}>
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -130,20 +130,20 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "font-medium", 
+                    "h-8 px-2 font-medium text-sm", 
                     isScrolled ? "text-devconnect-dark" : "text-white"
                   )}
                 >
                   Sponsors
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-3 p-4">
+                  <ul className="grid w-[200px] gap-2 p-3">
                     {sponsorsLinks.map((item) => (
                       <li key={item.path}>
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -158,12 +158,12 @@ const Navbar = () => {
           
           <SearchSpotlight />
           
-          {isConnected && <AdminButton />}
+          {isConnected && <AdminButton size="sm" />}
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
         {/* Mobile Navigation */}
-        <div className="lg:hidden flex items-center gap-2">
+        <div className="lg:hidden flex items-center gap-1">
           <div className="flex-shrink-0">
             {isConnected ? 
               <UserProfileDropdown /> : 
@@ -177,29 +177,29 @@ const Navbar = () => {
           
           <Button 
             variant="ghost"
-            size="icon"
+            size="sm"
             className={cn(
               "flex-shrink-0", 
               isScrolled ? "text-devconnect-dark" : "text-white"
             )}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </Button>
         </div>
       </div>
       
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-black/80 backdrop-blur-md w-full shadow-lg">
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
+        <div className="lg:hidden bg-black/90 backdrop-blur-md w-full shadow-lg">
+          <div className="container mx-auto px-4 py-3 flex flex-col space-y-1">
             <div className="py-2 border-b border-white/20">
-              <h3 className="text-white text-sm font-bold mb-2">Explore</h3>
+              <h3 className="text-white text-xs font-bold mb-1">Explore</h3>
               {navigationLinks.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -208,12 +208,12 @@ const Navbar = () => {
             </div>
             
             <div className="py-2 border-b border-white/20">
-              <h3 className="text-white text-sm font-bold mb-2">Attendants</h3>
+              <h3 className="text-white text-xs font-bold mb-1">Attendants</h3>
               {attendantLinks.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -222,12 +222,12 @@ const Navbar = () => {
             </div>
             
             <div className="py-2">
-              <h3 className="text-white text-sm font-bold mb-2">Sponsors</h3>
+              <h3 className="text-white text-xs font-bold mb-1">Sponsors</h3>
               {sponsorsLinks.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -243,7 +243,7 @@ const Navbar = () => {
                 }}
                 variant="outline"
                 size="sm"
-                className="mt-2 border-argentina-blue text-argentina-blue hover:bg-argentina-blue hover:text-white"
+                className="mt-1 border-argentina-blue text-argentina-blue hover:bg-argentina-blue hover:text-white"
               >
                 Admin Dashboard
               </Button>
