@@ -207,8 +207,7 @@ const VenueProposalForm = ({ type, onClose }: VenueProposalFormProps) => {
           </form>
         </Form>
       </CardContent>
-    </CardContent>
-  </Card>
+    </Card>
   );
 };
 
