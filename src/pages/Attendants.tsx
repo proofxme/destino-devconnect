@@ -65,7 +65,7 @@ const Attendants = () => {
               <SelectValue placeholder="Filter by role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Roles</SelectItem>
+              <SelectItem value="all-roles">All Roles</SelectItem>
               {uniqueRoles.map(role => (
                 <SelectItem key={role} value={role}>{role}</SelectItem>
               ))}
