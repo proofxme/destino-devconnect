@@ -125,12 +125,28 @@ const EventCalendar = () => {
           modifiers={{
             hasEvent: (date) => isDayWithEvent(date)
           }}
-          styles={{
-            day_today: { fontWeight: "bold" },
-            day_selected: { backgroundColor: "#1EAEDB" }
-          }}
           classNames={{
-            day_hasEvent: "font-bold underline"
+            day: "font-normal",
+            day_selected: "bg-blue-500 text-white",
+            day_today: "border border-blue-500",
+            day_disabled: "text-gray-400",
+            day_outside: "text-gray-400 opacity-50",
+            day_range_middle: "bg-blue-50",
+            day_hidden: "invisible",
+            caption_label: "text-sm font-medium",
+            root: "w-full",
+            nav_button: "p-1",
+            nav_button_previous: "mr-auto",
+            nav_button_next: "ml-auto",
+            head_cell: "font-normal text-xs",
+            table: "w-full border-collapse",
+            row: "flex w-full",
+            cell: "p-0",
+            ...Object.fromEntries(
+              isDayWithEvent ? 
+                [["day_hasEvent", "font-bold underline"]] : 
+                []
+            )
           }}
         />
         <div className="mt-4">

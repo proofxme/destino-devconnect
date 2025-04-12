@@ -1,15 +1,34 @@
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X, Wallet } from 'lucide-react';
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, Wallet, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
+
+// Add ethereum property to Window interface
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
+  const navigate = useNavigate();
+
+  // Check if wallet is already connected on component mount
+  useEffect(() => {
+    const connected = localStorage.getItem("wallet-connected") === "true";
+    const address = localStorage.getItem("wallet-address");
+    if (connected && address) {
+      setIsConnected(true);
+      setWalletAddress(address);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,18 +52,32 @@ const Navbar = () => {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setWalletAddress(accounts[0]);
         setIsConnected(true);
+        
+        // Store connection in localStorage
+        localStorage.setItem("wallet-connected", "true");
+        localStorage.setItem("wallet-address", accounts[0]);
+        
+        toast.success("Wallet connected successfully!");
         console.log("Wallet connected:", accounts[0]);
       } else {
-        alert("Please install MetaMask to use this feature!");
+        toast.error("Please install MetaMask to use this feature!");
       }
     } catch (error) {
       console.error("Error connecting wallet:", error);
+      toast.error("Failed to connect wallet");
     }
   };
 
   const disconnectWallet = () => {
     setIsConnected(false);
     setWalletAddress("");
+    localStorage.removeItem("wallet-connected");
+    localStorage.removeItem("wallet-address");
+    toast.info("Wallet disconnected");
+  };
+
+  const goToAdminDashboard = () => {
+    navigate("/admin");
   };
 
   const navItems = [
@@ -90,23 +123,50 @@ const Navbar = () => {
             </Link>
           ))}
           
-          <Button
-            onClick={isConnected ? disconnectWallet : connectWallet}
-            variant={isConnected ? "outline" : "default"}
-            className={cn(
-              "ml-4",
-              !isConnected && "bg-argentina-blue hover:bg-argentina-blue-dark"
-            )}
-          >
-            <Wallet className="mr-2 h-4 w-4" />
-            {isConnected 
-              ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` 
-              : "Connect Wallet"}
-          </Button>
+          {isConnected ? (
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={goToAdminDashboard}
+                variant="outline"
+                className="border-argentina-blue text-argentina-blue hover:bg-argentina-blue hover:text-white"
+              >
+                Admin Dashboard
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+              <Button
+                onClick={disconnectWallet}
+                variant="outline"
+                className="ml-1"
+              >
+                <Wallet className="mr-2 h-4 w-4" />
+                {`${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`}
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={connectWallet}
+              variant="default"
+              className="ml-4 bg-argentina-blue hover:bg-argentina-blue-dark"
+            >
+              <Wallet className="mr-2 h-4 w-4" />
+              Connect Wallet
+            </Button>
+          )}
         </div>
         
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
+          {isConnected && (
+            <Button
+              onClick={goToAdminDashboard}
+              variant="outline"
+              size="sm"
+              className="mr-2 border-argentina-blue text-argentina-blue"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          )}
+          
           <Button
             onClick={isConnected ? disconnectWallet : connectWallet}
             variant={isConnected ? "outline" : "default"}
