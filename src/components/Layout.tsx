@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useWallet } from "@/context/WalletContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -27,6 +27,15 @@ const Layout: React.FC<LayoutProps> = ({
     setSidebarCollapsed(prev => !prev);
   };
 
+  // Expose sidebar state to window for other components to access
+  useEffect(() => {
+    if (connected && isHomePage && !isMobile) {
+      window.dispatchEvent(new CustomEvent('sidebar-state-change', { 
+        detail: { collapsed: sidebarCollapsed } 
+      }));
+    }
+  }, [sidebarCollapsed, connected, isHomePage, isMobile]);
+
   // For mobile, we don't show the main sidebar
   if (isMobile) {
     return (
@@ -47,7 +56,12 @@ const Layout: React.FC<LayoutProps> = ({
       
       <div className="pt-16 flex"> {/* Adjusted padding for taller navbar */}
         {connected && isHomePage && (
-          <div className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-16' : 'w-80'}`}>
+          <div 
+            className={`fixed top-16 right-0 h-[calc(100vh-64px)] border-l border-gray-200 bg-white z-10 transition-all duration-300 ease-in-out ${
+              sidebarCollapsed ? 'w-16 trip-sidebar-collapsed' : 'w-80 trip-sidebar-expanded'
+            }`}
+            id="trip-sidebar"
+          >
             <div className="absolute -left-4 top-4 z-20">
               <Button 
                 variant="outline" 
@@ -63,7 +77,11 @@ const Layout: React.FC<LayoutProps> = ({
           </div>
         )}
         
-        <main className={`flex-1 ${connected && isHomePage ? (sidebarCollapsed ? 'mr-16' : 'mr-80') : ''} transition-all duration-300 ease-in-out`}>
+        <main 
+          className={`flex-1 ${
+            connected && isHomePage ? (sidebarCollapsed ? 'mr-16' : 'mr-80') : ''
+          } transition-all duration-300 ease-in-out`}
+        >
           {children}
         </main>
       </div>

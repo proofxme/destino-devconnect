@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Search, Users, Filter } from "lucide-react";
+import { useWallet } from "@/context/WalletContext";
 
 // Mock data for attendants
 const MOCK_ATTENDANTS = [
@@ -21,6 +22,41 @@ const MOCK_ATTENDANTS = [
 const Attendants = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("");
+  const { connected } = useWallet();
+  const [sidebarState, setSidebarState] = useState<"expanded" | "collapsed" | "none">("none");
+  
+  // Monitor sidebar state
+  useEffect(() => {
+    const checkSidebarState = () => {
+      if (!connected || window.location.pathname !== "/") {
+        setSidebarState("none");
+        return;
+      }
+      
+      const sidebar = document.getElementById("trip-sidebar");
+      if (sidebar) {
+        if (sidebar.classList.contains("trip-sidebar-collapsed")) {
+          setSidebarState("collapsed");
+        } else if (sidebar.classList.contains("trip-sidebar-expanded")) {
+          setSidebarState("expanded");
+        }
+      }
+    };
+
+    checkSidebarState();
+    
+    const handleSidebarStateChange = () => {
+      checkSidebarState();
+    };
+    
+    window.addEventListener('sidebar-state-change', handleSidebarStateChange);
+    window.addEventListener('resize', checkSidebarState);
+    
+    return () => {
+      window.removeEventListener('sidebar-state-change', handleSidebarStateChange);
+      window.removeEventListener('resize', checkSidebarState);
+    };
+  }, [connected]);
   
   const filteredAttendants = MOCK_ATTENDANTS.filter(attendant => {
     const matchesSearch = 
@@ -30,7 +66,7 @@ const Attendants = () => {
         interest.toLowerCase().includes(searchTerm.toLowerCase())
       );
       
-    const matchesRole = roleFilter === "" || attendant.role === roleFilter;
+    const matchesRole = roleFilter === "" || roleFilter === "all-roles" || attendant.role === roleFilter;
     
     return matchesSearch && matchesRole;
   });
@@ -38,7 +74,9 @@ const Attendants = () => {
   const uniqueRoles = Array.from(new Set(MOCK_ATTENDANTS.map(a => a.role)));
 
   return (
-    <div className="container mx-auto py-16 px-4">
+    <div className={`container mx-auto py-16 px-4 ${
+      sidebarState === "expanded" ? "max-w-[calc(100%-20rem)]" : ""
+    }`}>
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-4">Devconnect Attendants</h1>
         <p className="text-gray-600 mb-6">
