@@ -20,18 +20,16 @@ const Layout: React.FC<LayoutProps> = ({
   const isHomePage = location.pathname === "/";
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex flex-1 overflow-auto">
-        {connected && isHomePage && !isMobile && (
-          <div className="sidebar-container w-80 border-r border-gray-200 bg-white overflow-y-auto max-h-screen sticky top-0">
-            <TripSidebar />
-          </div>
-        )}
-        <div className="flex-1 overflow-y-auto">
-          <div className="container mx-auto px-0">
-            {connected && isHomePage && isMobile && <TripSidebar isMobile />}
-            {children}
-          </div>
+    <div className="min-h-screen">
+      {connected && isHomePage && !isMobile && (
+        <div className="fixed top-0 left-0 w-80 h-screen border-r border-gray-200 bg-white z-10">
+          <TripSidebar />
+        </div>
+      )}
+      <div className={`${connected && isHomePage && !isMobile ? 'ml-80' : ''} transition-all duration-300 ease-in-out`}>
+        <div className="container mx-auto px-0">
+          {connected && isHomePage && isMobile && <TripSidebar isMobile />}
+          {children}
         </div>
       </div>
     </div>
