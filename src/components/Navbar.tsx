@@ -1,12 +1,15 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Wallet } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +25,27 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const connectWallet = async () => {
+    try {
+      // Check if MetaMask is available
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletAddress(accounts[0]);
+        setIsConnected(true);
+        console.log("Wallet connected:", accounts[0]);
+      } else {
+        alert("Please install MetaMask to use this feature!");
+      }
+    } catch (error) {
+      console.error("Error connecting wallet:", error);
+    }
+  };
+
+  const disconnectWallet = () => {
+    setIsConnected(false);
+    setWalletAddress("");
+  };
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -52,7 +76,7 @@ const Navbar = () => {
         </Link>
         
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6">
+        <div className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => (
             <Link 
               key={item.name}
@@ -65,19 +89,44 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+          
+          <Button
+            onClick={isConnected ? disconnectWallet : connectWallet}
+            variant={isConnected ? "outline" : "default"}
+            className={cn(
+              "ml-4",
+              !isConnected && "bg-argentina-blue hover:bg-argentina-blue-dark"
+            )}
+          >
+            <Wallet className="mr-2 h-4 w-4" />
+            {isConnected 
+              ? `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` 
+              : "Connect Wallet"}
+          </Button>
         </div>
         
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? (
-            <X className={isScrolled ? "text-devconnect-dark" : "text-white"} />
-          ) : (
-            <Menu className={isScrolled ? "text-devconnect-dark" : "text-white"} />
-          )}
-        </button>
+        <div className="md:hidden flex items-center">
+          <Button
+            onClick={isConnected ? disconnectWallet : connectWallet}
+            variant={isConnected ? "outline" : "default"}
+            size="sm"
+            className="mr-2"
+          >
+            <Wallet className="h-4 w-4" />
+          </Button>
+          
+          <button 
+            className="ml-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? (
+              <X className={isScrolled ? "text-devconnect-dark" : "text-white"} />
+            ) : (
+              <Menu className={isScrolled ? "text-devconnect-dark" : "text-white"} />
+            )}
+          </button>
+        </div>
       </div>
       
       {/* Mobile Menu */}
@@ -94,6 +143,11 @@ const Navbar = () => {
                 {item.name}
               </Link>
             ))}
+            {isConnected && (
+              <div className="text-xs text-gray-500 pt-2">
+                Connected: {`${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}`}
+              </div>
+            )}
           </div>
         </div>
       )}
