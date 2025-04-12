@@ -1,16 +1,45 @@
 
 import { useEffect, useState } from "react";
-import { Menu, Wallet } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { Menu, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { SearchSpotlight } from "./SearchSpotlight";
 import { NavbarLogo } from "./navigation/NavbarLogo";
+import { AdminButton } from "./navigation/AdminButton";
 import { useWallet } from "@/context/WalletContext";
 import UserProfileDropdown from "./navigation/UserProfileDropdown";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import WalletButton from "./WalletButton";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const navigationLinks = [
+  { name: "Home", path: "/" },
+  { name: "Events", path: "/events" },
+  { name: "Accommodations", path: "/accommodations" },
+  { name: "Restaurants", path: "/restaurants" },
+  { name: "Activities", path: "/activities" },
+];
+
+const attendantLinks = [
+  { name: "All Attendants", path: "/attendants" },
+];
+
+const sponsorsLinks = [
+  { name: "Ecosystem Partners", path: "/sponsors" },
+];
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { connected: isConnected } = useWallet();
   const isMobile = useIsMobile();
 
@@ -29,26 +58,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Simple wallet button for the navbar
-  const WalletButton = () => {
-    const { connecting, connect } = useWallet();
-    
-    return (
-      <Button 
-        variant="ghost" 
-        size="icon"
-        className={cn(
-          "rounded-full",
-          isConnected ? "text-argentina-sun" : "text-white/70"
-        )}
-        onClick={isConnected ? undefined : connect} 
-        disabled={connecting}
-      >
-        <Wallet className="h-5 w-5" />
-      </Button>
-    );
-  };
-
   return (
     <nav className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300",
@@ -58,31 +67,186 @@ const Navbar = () => {
     )}>
       <div className="container mx-auto px-4 flex justify-between items-center h-14">
         {/* Logo */}
-        <NavbarLogo isScrolled={false} />
+        <div className="flex items-center">
+          <NavbarLogo isScrolled={false} />
+        </div>
         
-        {/* Right side controls */}
-        <div className="flex items-center gap-2">
-          {isConnected ? <UserProfileDropdown /> : <WalletButton />}
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-4">
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-2">
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
+                  )}
+                >
+                  Explore
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-2 p-3 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {navigationLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
+                  )}
+                >
+                  Attendants
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[200px] gap-2 p-3">
+                    {attendantLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
+                  )}
+                >
+                  Sponsors
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[200px] gap-2 p-3">
+                    {sponsorsLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
           
-          {isMobile && (
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0">
-                <div className="py-4 px-3 border-b border-sidebar-border">
-                  <NavbarLogo isScrolled={true} />
-                </div>
-                <div className="h-[calc(100%-80px)]">
-                  {/* AppSidebar will be rendered inside the sheet content */}
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
+          <SearchSpotlight />
+          
+          {isConnected && <AdminButton size="default" />}
+          {isConnected ? <UserProfileDropdown /> : <WalletButton />}
+        </div>
+        
+        {/* Mobile Navigation */}
+        <div className="lg:hidden flex items-center gap-3">
+          <div className="flex-shrink-0">
+            {isConnected ? 
+              <UserProfileDropdown /> : 
+              <WalletButton />
+            }
+          </div>
+          
+          <div className="flex-shrink-0">
+            <SearchSpotlight />
+          </div>
+          
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </Button>
         </div>
       </div>
+      
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-gray-800 w-full shadow-lg">
+          <div className="container mx-auto px-4 py-3 flex flex-col space-y-1">
+            <div className="py-2 border-b border-white/20">
+              <h3 className="text-white text-xs font-bold mb-1">Explore</h3>
+              {navigationLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="py-2 border-b border-white/20">
+              <h3 className="text-white text-xs font-bold mb-1">Attendants</h3>
+              {attendantLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="py-2">
+              <h3 className="text-white text-xs font-bold mb-1">Sponsors</h3>
+              {sponsorsLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            {isConnected && (
+              <Button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.location.href="/admin";
+                }}
+                variant="outline"
+                size="sm"
+                className="mt-1 border-blue-300 text-blue-300 hover:bg-blue-300 hover:text-white"
+              >
+                Admin Dashboard
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -22,19 +22,13 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from "@/components/ui/sidebar";
-import { ScrollArea } from "./ui/scroll-area";
+import { NavbarLogo } from "./navigation/NavbarLogo";
 import { useWallet } from "@/context/WalletContext";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "./ui/scroll-area";
 
 const AppSidebar = () => {
   const location = useLocation();
   const { connected } = useWallet();
-  const isMobile = useIsMobile();
-
-  // Hide sidebar on desktop
-  if (!isMobile) {
-    return null;
-  }
 
   // Core navigation links
   const exploreLinks = [
@@ -61,6 +55,10 @@ const AppSidebar = () => {
 
   return (
     <Sidebar>
+      <div className="py-4 px-3 border-b border-sidebar-border">
+        <NavbarLogo isScrolled={true} />
+      </div>
+      
       <SidebarContent>
         <ScrollArea className="h-[calc(100vh-80px)]">
           {/* Explore Section */}
