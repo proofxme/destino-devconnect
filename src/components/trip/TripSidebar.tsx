@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { CalendarRange, Utensils, Users, X } from "lucide-react";
@@ -94,8 +93,8 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
   }
 
   return (
-    <div className="w-96 min-h-screen bg-white border-r border-gray-200">
-      <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white p-4">
+    <div className="w-full h-screen overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+      <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white p-4 sticky top-0 z-10">
         <h2 className="text-xl font-bold">My Devconnect Trip</h2>
         {tripPlan && (
           <div className="flex items-center mt-2 text-sm">
@@ -148,8 +147,8 @@ const MobileTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =>
 
 const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) => {
   return (
-    <>
-      <section className="mb-6">
+    <div className="space-y-6 overflow-auto">
+      <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold flex items-center">
             <CalendarRange size={18} className="mr-2 text-argentina-blue" />
@@ -160,7 +159,7 @@ const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =
         <TripEventsList events={tripPlan?.events || []} loading={loading} />
       </section>
       
-      <section className="mb-6">
+      <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold flex items-center">
             <Utensils size={18} className="mr-2 text-argentina-blue" />
@@ -180,7 +179,7 @@ const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =
         </div>
         <TripFriendsList friends={tripPlan?.friends || []} loading={loading} />
       </section>
-    </>
+    </div>
   );
 };
 

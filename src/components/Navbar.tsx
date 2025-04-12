@@ -9,6 +9,7 @@ import { NavMenu } from "./navigation/NavMenu";
 import { AdminButton } from "./navigation/AdminButton";
 import WalletButton from "./WalletButton";
 import { useWallet } from "@/context/WalletContext";
+import UserProfileDropdown from "./navigation/UserProfileDropdown";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,22 +39,33 @@ const Navbar = () => {
         : "bg-transparent py-4"
     )}>
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <NavbarLogo isScrolled={isScrolled} />
+        <div className="flex items-center">
+          <NavbarLogo isScrolled={isScrolled} />
+        </div>
         
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-4">
           <NavMenu isScrolled={isScrolled} />
-          
           <SearchSpotlight />
           
           {isConnected && <AdminButton />}
-          <WalletButton />
+          {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
         <div className="md:hidden flex items-center">
           <SearchSpotlight />
           
           {isConnected && <AdminButton size="sm" className="mr-2" />}
-          <WalletButton />
+          {isConnected ? 
+            <UserProfileDropdown /> : 
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mr-2"
+              onClick={() => window.location.href="/connect-wallet"}
+            >
+              Connect
+            </Button>
+          }
           
           <button 
             className="ml-2"
