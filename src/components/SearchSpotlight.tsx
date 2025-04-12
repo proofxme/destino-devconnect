@@ -11,69 +11,44 @@ import {
   CommandList 
 } from "@/components/ui/command";
 import { Button } from "./ui/button";
-import { toast } from "sonner";
-
-type SearchItem = {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  type: 'event' | 'accommodation' | 'restaurant' | 'activity';
-  link: string;
-  imageUrl: string;
-};
+import { SearchItem, searchItems, addToList, addToFavorites, subscribeToItem } from "@/api/searchApi";
 
 export function SearchSpotlight() {
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Combine data from all sections
+  // Search for items when query changes
   useEffect(() => {
-    if (searchQuery.length < 2) {
-      setSearchResults([]);
-      return;
-    }
+    const fetchResults = async () => {
+      if (searchQuery.length < 2) {
+        setSearchResults([]);
+        return;
+      }
 
-    // This would normally be a real search API call
-    // Here we'll simulate with static data
-    const query = searchQuery.toLowerCase();
-    
-    // Get data from various places in the app (this is an example implementation)
-    const events = [
-      { id: 1, title: "Devconnect Buenos Aires", description: "The main Devconnect event", category: "conference", imageUrl: "https://images.unsplash.com/photo-1540575467063-178a50c2df87" },
-      { id: 2, title: "ETHLatam", description: "Latin America's largest Ethereum community event", category: "conference", imageUrl: "https://images.unsplash.com/photo-1591116681b-8f15b8c8ba11" },
-    ];
-    
-    const accommodations = [
-      { id: 1, title: "Alvear Palace Hotel", description: "Luxury hotel in Recoleta", category: "Luxury", imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945" },
-      { id: 2, title: "Palermo Soho Loft", description: "Modern loft apartment", category: "Apartment", imageUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" },
-    ];
-    
-    const restaurants = [
-      { id: 1, title: "Don Julio", description: "Famous steakhouse", category: "Steakhouse", imageUrl: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17" },
-      { id: 2, title: "El Preferido", description: "Historic local restaurant", category: "Argentine", imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" },
-    ];
-    
-    const activities = [
-      { id: 1, title: "La Bomba de Tiempo", description: "Famous drum performance", category: "Cultural", imageUrl: "https://images.unsplash.com/photo-1526142684086-7ebd69df27a5" },
-      { id: 2, title: "San Telmo Sunday Market", description: "Historic market", category: "Shopping", imageUrl: "https://images.unsplash.com/photo-1534274867514-d5b47ef89ed7" },
-    ];
+      setIsLoading(true);
+      
+      try {
+        const results = await searchItems(searchQuery);
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Search error:", error);
+        setSearchResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Format results
-    const results: SearchItem[] = [
-      ...events.filter(e => e.title.toLowerCase().includes(query) || e.description.toLowerCase().includes(query))
-        .map(e => ({ ...e, type: 'event' as const, link: `/events` })),
-      ...accommodations.filter(a => a.title.toLowerCase().includes(query) || a.description.toLowerCase().includes(query))
-        .map(a => ({ ...a, type: 'accommodation' as const, link: `/accommodations` })),
-      ...restaurants.filter(r => r.title.toLowerCase().includes(query) || r.description.toLowerCase().includes(query))
-        .map(r => ({ ...r, type: 'restaurant' as const, link: `/restaurants` })),
-      ...activities.filter(a => a.title.toLowerCase().includes(query) || a.description.toLowerCase().includes(query))
-        .map(a => ({ ...a, type: 'activity' as const, link: `/activities` })),
-    ];
+    // Debounce search for performance
+    const debounceTimer = setTimeout(() => {
+      fetchResults();
+    }, 300);
 
-    setSearchResults(results);
+    return () => {
+      clearTimeout(debounceTimer);
+    };
   }, [searchQuery]);
 
   // Set up keyboard shortcut to open search dialog
@@ -94,19 +69,31 @@ export function SearchSpotlight() {
     navigate(item.link);
   };
 
-  const addToList = (e: React.MouseEvent, item: SearchItem) => {
+  const handleAddToList = async (e: React.MouseEvent, item: SearchItem) => {
     e.stopPropagation();
-    toast.success(`Added ${item.title} to list`);
+    try {
+      await addToList(item.id);
+    } catch (error) {
+      console.error("Error adding to list:", error);
+    }
   };
 
-  const addToFavorites = (e: React.MouseEvent, item: SearchItem) => {
+  const handleAddToFavorites = async (e: React.MouseEvent, item: SearchItem) => {
     e.stopPropagation();
-    toast.success(`Added ${item.title} to favorites`);
+    try {
+      await addToFavorites(item.id);
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+    }
   };
 
-  const subscribe = (e: React.MouseEvent, item: SearchItem) => {
+  const handleSubscribe = async (e: React.MouseEvent, item: SearchItem) => {
     e.stopPropagation();
-    toast.success(`Subscribed to ${item.title}`);
+    try {
+      await subscribeToItem(item.id);
+    } catch (error) {
+      console.error("Error subscribing:", error);
+    }
   };
 
   return (
@@ -129,6 +116,11 @@ export function SearchSpotlight() {
           onValueChange={setSearchQuery}
         />
         <CommandList>
+          {isLoading && (
+            <div className="py-6 text-center text-sm text-muted-foreground">
+              Searching...
+            </div>
+          )}
           <CommandEmpty>No results found.</CommandEmpty>
           {searchResults.length > 0 && (
             <CommandGroup heading="Results">
@@ -162,7 +154,7 @@ export function SearchSpotlight() {
                       size="icon" 
                       variant="ghost" 
                       className="h-7 w-7"
-                      onClick={(e) => addToList(e, item)}
+                      onClick={(e) => handleAddToList(e, item)}
                       title="Add to list"
                     >
                       <ListPlus size={16} />
@@ -171,7 +163,7 @@ export function SearchSpotlight() {
                       size="icon"
                       variant="ghost"
                       className="h-7 w-7"
-                      onClick={(e) => addToFavorites(e, item)}
+                      onClick={(e) => handleAddToFavorites(e, item)}
                       title="Add to favorites"
                     >
                       <Heart size={16} />
@@ -180,7 +172,7 @@ export function SearchSpotlight() {
                       size="icon"
                       variant="ghost"
                       className="h-7 w-7"
-                      onClick={(e) => subscribe(e, item)}
+                      onClick={(e) => handleSubscribe(e, item)}
                       title="Subscribe"
                     >
                       <BookmarkPlus size={16} />
