@@ -54,12 +54,12 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar variant="sidebar">
-      <div className="py-4 px-3 border-b border-sidebar-border bg-sidebar">
+    <Sidebar>
+      <div className="py-4 px-3 border-b">
         <NavbarLogo isScrolled={true} />
       </div>
       
-      <SidebarContent className="bg-sidebar">
+      <SidebarContent>
         <ScrollArea className="h-[calc(100vh-80px)]">
           {/* Explore Section */}
           <SidebarGroup>
