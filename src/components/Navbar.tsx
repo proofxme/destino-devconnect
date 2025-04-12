@@ -1,11 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, Wallet, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { CityFilter } from "./CityFilter";
 import { SearchSpotlight } from "./SearchSpotlight";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
@@ -134,7 +132,6 @@ const Navbar = () => {
             </CollapsibleContent>
           </Collapsible>
           
-          <CityFilter />
           <SearchSpotlight />
           
           {isConnected ? (
@@ -207,7 +204,6 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white w-full">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            <CityFilter />
             {navItems.map((item) => (
               <Link 
                 key={item.name}
