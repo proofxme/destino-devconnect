@@ -162,7 +162,12 @@ const Index = () => {
             <p className="text-lg mb-8">
               Connect with local blockchain enthusiasts, attend community events, and make the most of your Devconnect experience
             </p>
-            <button className="bg-argentina-blue hover:bg-argentina-blue-dark text-white font-medium py-3 px-6 rounded-lg transition-colors">
+            <button className="bg-argentina-blue hover:bg-argentina-blue-dark text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center mx-auto">
+              <img 
+                src="/lovable-uploads/2963f319-054b-4f05-977f-1e7daa07ac8c.png" 
+                alt="Ethereum Argentina" 
+                className="w-8 h-8 mr-2"
+              />
               Join Community
             </button>
           </div>

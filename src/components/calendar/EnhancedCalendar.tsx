@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -77,7 +77,8 @@ const EnhancedCalendar = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to get events for a specific day
-  const getEventsForDay = (day: Date) => {
+  const getEventsForDay = (day: Date | undefined) => {
+    if (!day) return [];
     return events.filter(
       event => format(event.date, "yyyy-MM-dd") === format(day, "yyyy-MM-dd")
     );
@@ -159,7 +160,7 @@ const EnhancedCalendar = () => {
       >
         <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-100 hover:border-gray-200 overflow-hidden">
           <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary h-2"></div>
-          <CardHeader className="pb-0">
+          <CardHeader className="pb-2 pt-4">
             <CardTitle className="text-2xl font-bold text-gray-800">Events Calendar</CardTitle>
           </CardHeader>
           <CardContent>
@@ -167,49 +168,48 @@ const EnhancedCalendar = () => {
               mode="single"
               selected={selectedDate}
               onSelect={handleDateSelect}
-              className="rounded-md border p-3 pointer-events-auto bg-white"
+              className="rounded-md border-0 p-0 w-full"
+              modifiers={{
+                hasEvent: isDayWithEvent
+              }}
               modifiersStyles={{
-                selected: { 
+                selected: {
                   backgroundColor: "#1EAEDB",
-                  color: "#ffffff",
-                  fontWeight: "bold" 
-                },
-                today: { 
-                  border: "2px solid #1EAEDB",
-                  color: "#1EAEDB",
-                  fontWeight: "bold"
+                  color: "white",
+                  fontWeight: "bold",
+                  transform: "scale(1.1)",
+                  borderRadius: "9999px",
                 },
                 hasEvent: {
                   fontWeight: "bold",
-                  textDecoration: "underline",
+                  boxShadow: "inset 0 0 0 2px #1EAEDB",
+                  borderRadius: "9999px",
                   color: "#1EAEDB"
+                },
+                today: {
+                  fontWeight: "bold",
+                  border: "2px solid #1EAEDB",
+                  borderRadius: "9999px",
                 }
               }}
-              modifiers={{
-                hasEvent: (date) => isDayWithEvent(date)
-              }}
               classNames={{
-                day: "font-normal hover:bg-gray-100 transition-colors duration-200",
-                day_selected: "bg-argentina-blue text-white hover:bg-argentina-blue-dark",
-                day_today: "border-2 border-argentina-blue text-argentina-blue",
+                day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-100 rounded-full flex items-center justify-center mx-auto transition-all text-sm",
+                day_selected: "bg-argentina-blue text-white hover:bg-argentina-blue-dark rounded-full transform scale-110 transition-transform",
+                day_today: "border-2 border-argentina-blue text-argentina-blue font-bold rounded-full",
                 day_disabled: "text-gray-300",
                 day_outside: "text-gray-400 opacity-50",
                 day_range_middle: "bg-blue-50",
                 day_hidden: "invisible",
-                caption_label: "text-lg font-bold text-gray-800",
+                caption_label: "text-xl font-bold text-gray-800",
                 root: "w-full",
                 nav_button: "p-1 hover:bg-gray-100 rounded-full transition-colors",
                 nav_button_previous: "mr-auto",
                 nav_button_next: "ml-auto",
-                head_cell: "font-medium text-sm text-gray-600",
+                head_cell: "font-medium text-sm text-gray-600 w-10 h-10 flex items-center justify-center",
                 table: "w-full border-collapse",
-                row: "flex w-full justify-center",
-                cell: "p-0 text-center",
-                ...Object.fromEntries(
-                  isDayWithEvent ? 
-                    [["day_hasEvent", "font-bold text-argentina-blue underline"]] : 
-                    []
-                )
+                row: "flex w-full mt-2 justify-around",
+                cell: "p-0 text-center relative h-10 w-10",
+                head_row: "flex w-full justify-around"
               }}
             />
 
@@ -243,8 +243,17 @@ const EnhancedCalendar = () => {
         <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-gray-100 h-full">
           <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary h-2"></div>
           <CardHeader className="border-b border-gray-100">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "No Date Selected"}
+            <CardTitle className="text-2xl font-bold text-gray-800 flex items-center">
+              {selectedDate && (
+                <motion.div
+                  key={selectedDate.toString()}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {format(selectedDate, "MMMM d, yyyy")}
+                </motion.div>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -284,7 +293,17 @@ const EnhancedCalendar = () => {
                   exit={{ opacity: 0 }}
                   className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-200 rounded-lg h-48 mt-2"
                 >
-                  <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 100 }}>
+                  <motion.div 
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }} 
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 100,
+                      repeatType: "reverse",
+                      repeat: Infinity,
+                      repeatDelay: 2
+                    }}
+                  >
                     <div className="text-6xl mb-4">📅</div>
                   </motion.div>
                   <p className="text-center text-gray-500 text-lg">No events scheduled for this date</p>

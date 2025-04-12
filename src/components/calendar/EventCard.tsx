@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Calendar } from "lucide-react";
 
 type EventCategory = "conference" | "workshop" | "social" | "hackathon";
 
@@ -19,6 +20,7 @@ interface EventCardProps {
 const EventCard: React.FC<EventCardProps> = ({
   id,
   title,
+  date,
   location,
   category,
   description
@@ -57,6 +59,10 @@ const EventCard: React.FC<EventCardProps> = ({
           </div>
           <div className="p-4">
             <h3 className="font-bold text-lg mb-2 text-gray-800">{title}</h3>
+            <div className="flex items-center text-sm text-gray-600 mb-3">
+              <Calendar size={14} className="mr-1" />
+              <span>{format(date, "MMM d, yyyy")}</span>
+            </div>
             <p className="text-sm text-gray-600 mb-3">
               {location}
             </p>
