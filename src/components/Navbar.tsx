@@ -1,28 +1,39 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { SearchSpotlight } from "./SearchSpotlight";
 import { NavbarLogo } from "./navigation/NavbarLogo";
 import { AdminButton } from "./navigation/AdminButton";
-import WalletButton from "./WalletButton";
 import { useWallet } from "@/context/WalletContext";
 import UserProfileDropdown from "./navigation/UserProfileDropdown";
+import WalletButton from "./WalletButton";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
-const navItems = [
+const navigationLinks = [
   { name: "Home", path: "/" },
   { name: "Events", path: "/events" },
   { name: "Accommodations", path: "/accommodations" },
   { name: "Restaurants", path: "/restaurants" },
   { name: "Activities", path: "/activities" },
+];
+
+const attendantLinks = [
+  { name: "All Attendants", path: "/attendants" },
+];
+
+const sponsorsLinks = [
+  { name: "Ecosystem Partners", path: "/sponsors" },
 ];
 
 const Navbar = () => {
@@ -60,30 +71,90 @@ const Navbar = () => {
         
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                className={cn(
-                  "font-medium flex items-center gap-1",
-                  isScrolled ? "text-devconnect-dark" : "text-white"
-                )}
-                size="sm"
-              >
-                Navigation
-                <ChevronDown size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-white z-50">
-              {navItems.map((item) => (
-                <DropdownMenuItem key={item.name} asChild>
-                  <Link to={item.path} className="w-full">
-                    {item.name}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "font-medium", 
+                    isScrolled ? "text-devconnect-dark" : "text-white"
+                  )}
+                >
+                  Explore
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                    {navigationLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "font-medium", 
+                    isScrolled ? "text-devconnect-dark" : "text-white"
+                  )}
+                >
+                  Attendants
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[200px] gap-3 p-4">
+                    {attendantLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger 
+                  className={cn(
+                    "font-medium", 
+                    isScrolled ? "text-devconnect-dark" : "text-white"
+                  )}
+                >
+                  Sponsors
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[200px] gap-3 p-4">
+                    {sponsorsLinks.map((item) => (
+                      <li key={item.path}>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to={item.path}
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">{item.name}</div>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
           
           <SearchSpotlight />
           
@@ -96,17 +167,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             {isConnected ? 
               <UserProfileDropdown /> : 
-              <Button 
-                variant="outline" 
-                size="sm"
-                className={cn(
-                  "px-2 border-white text-white hover:bg-white/10",
-                  !isScrolled && "bg-black/20"
-                )}
-                onClick={() => window.location.href="/wallet"}
-              >
-                Connect
-              </Button>
+              <WalletButton />
             }
           </div>
           
@@ -132,16 +193,48 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-black/80 backdrop-blur-md w-full shadow-lg">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+            <div className="py-2 border-b border-white/20">
+              <h3 className="text-white text-sm font-bold mb-2">Explore</h3>
+              {navigationLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="py-2 border-b border-white/20">
+              <h3 className="text-white text-sm font-bold mb-2">Attendants</h3>
+              {attendantLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="py-2">
+              <h3 className="text-white text-sm font-bold mb-2">Sponsors</h3>
+              {sponsorsLinks.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className="text-white font-medium hover:text-argentina-blue transition-colors py-2 px-2 block"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+            
             {isConnected && (
               <Button 
                 onClick={() => {
