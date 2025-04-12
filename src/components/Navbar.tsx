@@ -60,24 +60,23 @@ const Navbar = () => {
     <nav className={cn(
       "fixed top-0 w-full z-50 transition-all duration-300",
       isScrolled 
-        ? "bg-white shadow-md py-1" 
-        : "bg-black/40 backdrop-blur-md py-2"
+        ? "bg-gray-800/95 shadow-md py-3" 
+        : "bg-gray-800 py-3"
     )}>
-      <div className="container mx-auto px-2 sm:px-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
-          <NavbarLogo isScrolled={isScrolled} />
+          <NavbarLogo isScrolled={false} />
         </div>
         
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center space-x-1">
+        <div className="hidden lg:flex items-center space-x-4">
           <NavigationMenu>
-            <NavigationMenuList>
+            <NavigationMenuList className="space-x-2">
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "h-8 px-2 font-medium text-sm", 
-                    isScrolled ? "text-devconnect-dark" : "text-white"
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
                   )}
                 >
                   Explore
@@ -89,7 +88,7 @@ const Navbar = () => {
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -103,8 +102,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "h-8 px-2 font-medium text-sm", 
-                    isScrolled ? "text-devconnect-dark" : "text-white"
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
                   )}
                 >
                   Attendants
@@ -116,7 +114,7 @@ const Navbar = () => {
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -130,8 +128,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger 
                   className={cn(
-                    "h-8 px-2 font-medium text-sm", 
-                    isScrolled ? "text-devconnect-dark" : "text-white"
+                    "h-10 px-4 text-base font-medium bg-white/10 hover:bg-white/20 text-white"
                   )}
                 >
                   Sponsors
@@ -143,7 +140,7 @@ const Navbar = () => {
                         <NavigationMenuLink asChild>
                           <Link
                             to={item.path}
-                            className="block select-none space-y-1 rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="text-sm font-medium leading-none">{item.name}</div>
                           </Link>
@@ -158,12 +155,12 @@ const Navbar = () => {
           
           <SearchSpotlight />
           
-          {isConnected && <AdminButton size="sm" />}
+          {isConnected && <AdminButton size="default" />}
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
         {/* Mobile Navigation */}
-        <div className="lg:hidden flex items-center gap-1">
+        <div className="lg:hidden flex items-center gap-3">
           <div className="flex-shrink-0">
             {isConnected ? 
               <UserProfileDropdown /> : 
@@ -178,20 +175,17 @@ const Navbar = () => {
           <Button 
             variant="ghost"
             size="sm"
-            className={cn(
-              "flex-shrink-0", 
-              isScrolled ? "text-devconnect-dark" : "text-white"
-            )}
+            className="text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
       </div>
       
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-black/90 backdrop-blur-md w-full shadow-lg">
+        <div className="lg:hidden bg-gray-800 w-full shadow-lg">
           <div className="container mx-auto px-4 py-3 flex flex-col space-y-1">
             <div className="py-2 border-b border-white/20">
               <h3 className="text-white text-xs font-bold mb-1">Explore</h3>
@@ -199,7 +193,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -213,7 +207,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -227,7 +221,7 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-white text-sm font-medium hover:text-argentina-blue transition-colors py-1 px-2 block"
+                  className="text-white text-sm font-medium hover:text-blue-300 transition-colors py-1 px-2 block"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -243,7 +237,7 @@ const Navbar = () => {
                 }}
                 variant="outline"
                 size="sm"
-                className="mt-1 border-argentina-blue text-argentina-blue hover:bg-argentina-blue hover:text-white"
+                className="mt-1 border-blue-300 text-blue-300 hover:bg-blue-300 hover:text-white"
               >
                 Admin Dashboard
               </Button>

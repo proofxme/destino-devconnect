@@ -101,15 +101,15 @@ export function SearchSpotlight() {
         variant="ghost"
         size={isMobile ? "icon" : "sm"}
         className={isMobile 
-          ? "h-7 w-7 p-0" 
-          : "relative h-8 w-8 md:w-48 md:justify-start md:px-3 md:py-1 text-sm"
+          ? "h-9 w-9 p-0 text-white" 
+          : "relative h-10 w-10 md:w-60 md:justify-start md:px-4 md:py-2 text-base rounded-md bg-white/10 hover:bg-white/20 text-white"
         }
         onClick={() => setOpen(true)}
       >
-        <Search className={isMobile ? "h-4 w-4" : "h-4 w-4 md:mr-2"} />
+        <Search className={isMobile ? "h-5 w-5" : "h-5 w-5 md:mr-2"} />
         {!isMobile && <span className="hidden md:inline-flex">Search...</span>}
         {!isMobile && (
-          <kbd className="hidden md:inline-flex absolute right-1.5 top-1.5 pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-[10px] font-medium opacity-100">
+          <kbd className="hidden md:inline-flex absolute right-3 top-2 pointer-events-none h-5 select-none items-center gap-1 rounded border bg-white/5 px-1.5 font-mono text-[10px] font-medium opacity-100 text-white">
             <span className="text-[10px]">⌘</span>K
           </kbd>
         )}
