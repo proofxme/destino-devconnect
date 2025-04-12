@@ -1,12 +1,28 @@
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, MapContainerProps, TileLayerProps, MarkerProps } from 'react-leaflet';
 import { PointOfInterest, DEFAULT_CENTER, DEFAULT_ZOOM, getIcon } from './mapUtils';
 import 'leaflet/dist/leaflet.css';
 import { ReactElement } from 'react';
+import L from 'leaflet';
 
 interface MapComponentProps {
   pois: PointOfInterest[];
   onSelectPOI: (poi: PointOfInterest) => void;
+}
+
+// Extended types to fix TypeScript errors
+interface ExtendedMapContainerProps extends MapContainerProps {
+  center: L.LatLngExpression;
+  zoom: number;
+  scrollWheelZoom: boolean;
+}
+
+interface ExtendedTileLayerProps extends TileLayerProps {
+  attribution: string;
+}
+
+interface ExtendedMarkerProps extends MarkerProps {
+  icon: L.Icon;
 }
 
 const MapComponent = ({ pois, onSelectPOI }: MapComponentProps): ReactElement => {
@@ -17,10 +33,12 @@ const MapComponent = ({ pois, onSelectPOI }: MapComponentProps): ReactElement =>
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
         scrollWheelZoom={false}
+        {...{} as ExtendedMapContainerProps} // Type assertion to fix TypeScript error
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          {...{} as ExtendedTileLayerProps} // Type assertion to fix TypeScript error
         />
         
         {pois.map((poi) => (
@@ -33,6 +51,7 @@ const MapComponent = ({ pois, onSelectPOI }: MapComponentProps): ReactElement =>
                 onSelectPOI(poi);
               },
             }}
+            {...{} as ExtendedMarkerProps} // Type assertion to fix TypeScript error
           >
             <Popup>
               <div>
