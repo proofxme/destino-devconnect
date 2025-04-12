@@ -2,28 +2,13 @@
 import { useWallet } from "@/context/WalletContext";
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
+import UserProfileDropdown from "./navigation/UserProfileDropdown";
 
 const WalletButton = () => {
-  const { connected, connecting, connect, disconnect, walletAddress } = useWallet();
-
-  const shortenAddress = (address: string | null) => {
-    if (!address) return "";
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  const { connected, connecting, connect } = useWallet();
 
   if (connected) {
-    return (
-      <div className="flex items-center">
-        <Button
-          variant="outline"
-          className="border-argentina-sun text-argentina-sun hover:bg-argentina-sun/10"
-          onClick={disconnect}
-        >
-          <Wallet className="mr-2 h-4 w-4" />
-          {shortenAddress(walletAddress)}
-        </Button>
-      </div>
-    );
+    return <UserProfileDropdown />;
   }
 
   return (
