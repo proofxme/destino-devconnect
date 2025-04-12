@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -7,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
   Tooltip,
 } from "@/components/ui/tooltip"
@@ -101,11 +99,7 @@ export const SidebarMenuButton = React.forwardRef<
       return button
     }
 
-    if (typeof tooltip === "string") {
-      tooltip = {
-        children: tooltip,
-      }
-    }
+    const tooltipContent = typeof tooltip === "string" ? { children: tooltip } : tooltip
 
     return (
       <Tooltip>
@@ -114,7 +108,7 @@ export const SidebarMenuButton = React.forwardRef<
           side="right"
           align="center"
           hidden={state !== "collapsed" || isMobile}
-          {...tooltip}
+          {...tooltipContent}
         />
       </Tooltip>
     )
