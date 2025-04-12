@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import TripEventsList from "./TripEventsList";
 import TripRestaurantsList from "./TripRestaurantsList";
 import TripFriendsList from "./TripFriendsList";
@@ -16,20 +17,21 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface TripSidebarProps {
   isMobile?: boolean;
+  collapsed?: boolean;
 }
 
-const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
+const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed = false }) => {
   const [open, setOpen] = useState(false);
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { connected } = useWallet();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (connected && open) {
+    if (connected) {
       fetchTripPlan();
     }
-  }, [connected, open]);
+  }, [connected]);
 
   const fetchTripPlan = async () => {
     try {
@@ -97,16 +99,24 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
   return (
     <ScrollArea className="w-full h-screen">
       <div className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white p-4 sticky top-0 z-10">
-        <h2 className="text-xl font-bold">My Devconnect Trip</h2>
-        {tripPlan && (
-          <div className="flex items-center mt-2 text-sm">
-            <CalendarRange size={16} className="mr-2" />
-            <span>{formatDate(tripPlan.startDate)} - {formatDate(tripPlan.endDate)}</span>
+        {!collapsed ? (
+          <>
+            <h2 className="text-xl font-bold">My Devconnect Trip</h2>
+            {tripPlan && (
+              <div className="flex items-center mt-2 text-sm">
+                <CalendarRange size={16} className="mr-2" />
+                <span>{formatDate(tripPlan.startDate)} - {formatDate(tripPlan.endDate)}</span>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex justify-center">
+            <CalendarRange size={20} />
           </div>
         )}
       </div>
       <div className="p-4">
-        <DesktopTripContent tripPlan={tripPlan} loading={loading} />
+        <DesktopTripContent tripPlan={tripPlan} loading={loading} collapsed={collapsed} />
       </div>
     </ScrollArea>
   );
@@ -115,6 +125,7 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false }) => {
 interface TripContentProps {
   tripPlan: TripPlan | null;
   loading: boolean;
+  collapsed?: boolean;
 }
 
 const MobileTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) => {
@@ -147,40 +158,83 @@ const MobileTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) =>
   );
 };
 
-const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading }) => {
+const DesktopTripContent: React.FC<TripContentProps> = ({ tripPlan, loading, collapsed = false }) => {
+  const [expandedSections, setExpandedSections] = useState({
+    events: true,
+    restaurants: true,
+    friends: true
+  });
+
+  const toggleSection = (section: 'events' | 'restaurants' | 'friends') => {
+    if (!collapsed) {
+      setExpandedSections(prev => ({
+        ...prev,
+        [section]: !prev[section]
+      }));
+    }
+  };
+
+  if (collapsed) {
+    return (
+      <div className="space-y-6 flex flex-col items-center">
+        <Button variant="ghost" size="icon" className="w-8 h-8">
+          <CalendarRange size={20} />
+        </Button>
+        <Button variant="ghost" size="icon" className="w-8 h-8">
+          <Utensils size={20} />
+        </Button>
+        <Button variant="ghost" size="icon" className="w-8 h-8">
+          <Users size={20} />
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <section>
+      <Collapsible open={expandedSections.events} onOpenChange={() => toggleSection('events')}>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <h3 className="text-lg font-semibold flex items-center">
-            <CalendarRange size={18} className="mr-2 text-argentina-blue" />
-            My Events
-          </h3>
+          <CollapsibleTrigger asChild>
+            <h3 className="text-lg font-semibold flex items-center cursor-pointer">
+              <CalendarRange size={18} className="mr-2 text-argentina-blue" />
+              My Events
+            </h3>
+          </CollapsibleTrigger>
           <Button variant="outline" size="sm">Add Event</Button>
         </div>
-        <TripEventsList events={tripPlan?.events || []} loading={loading} />
-      </section>
+        <CollapsibleContent className="animate-accordion-down">
+          <TripEventsList events={tripPlan?.events || []} loading={loading} />
+        </CollapsibleContent>
+      </Collapsible>
       
-      <section>
+      <Collapsible open={expandedSections.restaurants} onOpenChange={() => toggleSection('restaurants')}>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Utensils size={18} className="mr-2 text-argentina-blue" />
-            Dining Plans
-          </h3>
+          <CollapsibleTrigger asChild>
+            <h3 className="text-lg font-semibold flex items-center cursor-pointer">
+              <Utensils size={18} className="mr-2 text-argentina-blue" />
+              Dining Plans
+            </h3>
+          </CollapsibleTrigger>
           <Button variant="outline" size="sm">Add Restaurant</Button>
         </div>
-        <TripRestaurantsList restaurants={tripPlan?.restaurants || []} loading={loading} />
-      </section>
+        <CollapsibleContent className="animate-accordion-down">
+          <TripRestaurantsList restaurants={tripPlan?.restaurants || []} loading={loading} />
+        </CollapsibleContent>
+      </Collapsible>
       
-      <section>
+      <Collapsible open={expandedSections.friends} onOpenChange={() => toggleSection('friends')}>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <h3 className="text-lg font-semibold flex items-center">
-            <Users size={18} className="mr-2 text-argentina-blue" />
-            Friends Attending
-          </h3>
+          <CollapsibleTrigger asChild>
+            <h3 className="text-lg font-semibold flex items-center cursor-pointer">
+              <Users size={18} className="mr-2 text-argentina-blue" />
+              Friends Attending
+            </h3>
+          </CollapsibleTrigger>
         </div>
-        <TripFriendsList friends={tripPlan?.friends || []} loading={loading} />
-      </section>
+        <CollapsibleContent className="animate-accordion-down">
+          <TripFriendsList friends={tripPlan?.friends || []} loading={loading} />
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
