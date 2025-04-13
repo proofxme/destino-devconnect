@@ -1,10 +1,10 @@
-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
 import ArgentinaMap from "@/components/ArgentinaMap";
 import CategorySection from "@/components/CategorySection";
 import EnhancedCalendar from "@/components/calendar/EnhancedCalendar";
+import GlobeAnimation from "@/components/GlobeAnimation";
 
 const Index = () => {
   // Sample accommodations data
@@ -107,12 +107,7 @@ const Index = () => {
               <div className="relative w-full max-w-md aspect-square">
                 <div className="absolute inset-0 bg-white rounded-full opacity-10"></div>
                 <div className="absolute inset-4 bg-white rounded-full opacity-10 animate-pulse"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-white text-xl font-bold mb-2">Buenos Aires</div>
-                    <div className="text-white text-opacity-80 text-sm">November 2025</div>
-                  </div>
-                </div>
+                <GlobeAnimation />
               </div>
             </div>
           </div>
