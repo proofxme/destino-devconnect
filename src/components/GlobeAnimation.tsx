@@ -1,4 +1,3 @@
-
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -92,7 +91,7 @@ const GlobeAnimation = () => {
     const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xFCBF49 });  // Argentina sun color
     const argentinaMarker = new THREE.Mesh(markerGeometry, markerMaterial);
     argentinaMarker.position.copy(argentinaPosition);
-    scene.add(argentinaMarker);
+    earthGroup.add(argentinaMarker);
 
     // Create pulsing effect for Argentina marker
     const pulseGeometry = new THREE.SphereGeometry(0.2, 16, 16);
@@ -103,88 +102,199 @@ const GlobeAnimation = () => {
     });
     const pulse = new THREE.Mesh(pulseGeometry, pulseMaterial);
     pulse.position.copy(argentinaPosition);
-    scene.add(pulse);
+    earthGroup.add(pulse);
 
-    // Create random points with faces around the globe
-    const points: THREE.Mesh[] = [];
-    const arrows: THREE.ArrowHelper[] = [];
-
-    for (let i = 0; i < 15; i++) {
-      // Random position for points (avoiding Antarctica)
-      const lat = Math.random() * 150 - 60;
-      const long = Math.random() * 360 - 180;
-      const pointPosition = latLongToVector3(lat, long, radius * 1.05);
+    // Array to keep track of all animated elements that should rotate with the globe
+    const faceGroups: THREE.Group[] = [];
+    const travelPaths: THREE.Line[] = [];
+    const travelerDots: THREE.Mesh[] = [];
+    
+    // Create faces and travel paths
+    const createFaces = () => {
+      // Clear previous faces and paths
+      faceGroups.forEach(group => earthGroup.remove(group));
+      travelPaths.forEach(line => earthGroup.remove(line));
+      travelerDots.forEach(dot => earthGroup.remove(dot));
       
-      const pointGeometry = new THREE.SphereGeometry(0.08, 8, 8);
-      const pointMaterial = new THREE.MeshBasicMaterial({
-        color: 0x75AADB,  // Argentina blue
-        transparent: true,
-        opacity: 0.8,
-      });
+      faceGroups.length = 0;
+      travelPaths.length = 0;
+      travelerDots.length = 0;
       
-      const point = new THREE.Mesh(pointGeometry, pointMaterial);
-      point.position.copy(pointPosition);
-      scene.add(point);
-      points.push(point);
+      // Number of faces to create
+      const facesCount = 12;
       
-      // Create arrow pointing to Argentina
-      const direction = new THREE.Vector3().subVectors(argentinaPosition, pointPosition).normalize();
-      const arrowHelper = new THREE.ArrowHelper(
-        direction,
-        pointPosition,
-        pointPosition.distanceTo(argentinaPosition) * 0.8,
-        0xFFFFFF,
-        0.2,
-        0.1
-      );
-      scene.add(arrowHelper);
-      arrows.push(arrowHelper);
-      
-      // Create moving attendee dot
-      const attendeeDot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.04, 8, 8),
-        new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
-      );
-      
-      // Position it at the starting point
-      attendeeDot.position.copy(pointPosition);
-      
-      // Add to scene
-      scene.add(attendeeDot);
-      
-      // Animate the attendee dot along the arrow
-      const animateAttendee = () => {
-        const startPosition = pointPosition.clone();
-        const endPosition = argentinaPosition.clone();
-        let progress = 0;
-        
-        const duration = 2000 + Math.random() * 3000; // Random duration between 2-5 seconds
-        let startTime = Date.now() + Math.random() * 10000; // Random delay start - changed to let
-        
-        function updatePosition() {
-          const now = Date.now();
+      // Create faces at random positions on the globe
+      for (let i = 0; i < facesCount; i++) {
+        // Random position (avoiding Antarctica and oceans near Argentina)
+        let lat, long;
+        do {
+          lat = Math.random() * 140 - 60;  // -60 to +80 degrees latitude
+          long = Math.random() * 360 - 180;  // -180 to +180 degrees longitude
           
-          if (now > startTime) {
-            progress = (now - startTime) / duration;
-            
-            if (progress < 1) {
-              attendeeDot.position.lerpVectors(startPosition, endPosition, progress);
-            } else {
-              // Reset the animation
-              progress = 0;
-              startTime = Date.now() + Math.random() * 5000; // Now we can reassign to startTime
-              attendeeDot.position.copy(startPosition);
-            }
-          }
-          
-          requestAnimationFrame(updatePosition);
+          // Avoid points too close to Argentina (arbitrary distance check)
+          const distToArg = Math.sqrt(
+            Math.pow(lat - argentinaLat, 2) + 
+            Math.pow(long - argentinaLong, 2)
+          );
+        } while (distToArg < 20);  // Minimum distance
+        
+        const facePosition = latLongToVector3(lat, long, radius * 1.05);
+        
+        // Create a group for the face that will be parented to the earth
+        const faceGroup = new THREE.Group();
+        earthGroup.add(faceGroup);
+        faceGroups.push(faceGroup);
+        
+        // Create emoji-style face
+        // Base circle for face
+        const faceGeometry = new THREE.CircleGeometry(0.12, 32);
+        const faceMaterial = new THREE.MeshBasicMaterial({ 
+          color: Math.random() > 0.5 ? 0xFFDDAA : 0xEECB9A, 
+          side: THREE.DoubleSide 
+        });
+        const face = new THREE.Mesh(faceGeometry, faceMaterial);
+        
+        // Eyes
+        const eyeGeometry = new THREE.CircleGeometry(0.03, 16);
+        const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+        
+        const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        leftEye.position.set(-0.04, 0.02, 0.01);
+        
+        const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+        rightEye.position.set(0.04, 0.02, 0.01);
+        
+        // Smile
+        const smileGeometry = new THREE.TorusGeometry(0.05, 0.015, 16, 16, Math.PI);
+        const smileMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const smile = new THREE.Mesh(smileGeometry, smileMaterial);
+        smile.position.set(0, -0.03, 0.01);
+        smile.rotation.z = Math.PI;
+        
+        // Add features to face
+        face.add(leftEye);
+        face.add(rightEye);
+        face.add(smile);
+        
+        // Add face to the face group
+        faceGroup.add(face);
+        
+        // Position and orient the face to look outward from the globe center
+        faceGroup.position.copy(facePosition);
+        
+        // Make face look outward from the center of the earth
+        faceGroup.lookAt(new THREE.Vector3(0, 0, 0));
+        faceGroup.rotateY(Math.PI); // Rotate to face outward
+        
+        // Create travel path (parabolic curve)
+        const curvePoints = createParabolicCurve(facePosition, argentinaPosition, 0.5 + Math.random() * 0.5);
+        const curvePath = new THREE.CatmullRomCurve3(curvePoints);
+        
+        // Create a line for the travel path
+        const pathGeometry = new THREE.BufferGeometry().setFromPoints(curvePath.getPoints(64));
+        const pathMaterial = new THREE.LineBasicMaterial({ 
+          color: 0xFFFFFF, 
+          transparent: true,
+          opacity: 0.5
+        });
+        const pathLine = new THREE.Line(pathGeometry, pathMaterial);
+        earthGroup.add(pathLine);
+        travelPaths.push(pathLine);
+        
+        // Create traveling dot
+        const travelerGeometry = new THREE.SphereGeometry(0.04, 8, 8);
+        const travelerMaterial = new THREE.MeshBasicMaterial({ 
+          color: 0xFFFFFF,
+          transparent: true,
+          opacity: 0 // Start invisible
+        });
+        const travelerDot = new THREE.Mesh(travelerGeometry, travelerMaterial);
+        earthGroup.add(travelerDot);
+        travelerDots.push(travelerDot);
+        
+        // Set up animation for dot traveling along path
+        animateTraveler(travelerDot, curvePath, i * 1500); // Stagger start times
+      }
+    };
+    
+    // Create a parabolic curve between two points
+    const createParabolicCurve = (start: THREE.Vector3, end: THREE.Vector3, height: number) => {
+      const points = [];
+      const segments = 32;
+      
+      // Find midpoint
+      const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
+      
+      // Calculate direction from center of earth to midpoint and normalize
+      const normal = new THREE.Vector3().copy(mid).normalize();
+      
+      // Scale normal by height to get apex point above the arc
+      const apex = new THREE.Vector3().copy(normal).multiplyScalar(radius * (1 + height));
+      
+      // Sample points along the parabola
+      for (let i = 0; i <= segments; i++) {
+        const t = i / segments;
+        
+        // Quadratic bezier curve
+        const point = new THREE.Vector3();
+        const t1 = 1 - t;
+        
+        point.x = t1 * t1 * start.x + 2 * t1 * t * apex.x + t * t * end.x;
+        point.y = t1 * t1 * start.y + 2 * t1 * t * apex.y + t * t * end.y;
+        point.z = t1 * t1 * start.z + 2 * t1 * t * apex.z + t * t * end.z;
+        
+        points.push(point);
+      }
+      
+      return points;
+    };
+    
+    // Animate traveler dot along path
+    const animateTraveler = (traveler: THREE.Mesh, path: THREE.CatmullRomCurve3, delay: number) => {
+      let progress = 0;
+      let active = false;
+      let startTime = Date.now() + delay;
+      const duration = 4000 + Math.random() * 6000; // 4-10 seconds
+      
+      const updatePosition = () => {
+        const now = Date.now();
+        
+        if (!active && now > startTime) {
+          active = true;
+          // Make traveler visible when active
+          (traveler.material as THREE.MeshBasicMaterial).opacity = 0.9;
         }
         
-        updatePosition();
+        if (active) {
+          progress = ((now - startTime) % duration) / duration;
+          
+          // Get position along curve
+          const position = path.getPoint(progress);
+          traveler.position.copy(position);
+          
+          // Fade out near the end
+          if (progress > 0.9) {
+            const fade = 1 - (progress - 0.9) * 10;
+            (traveler.material as THREE.MeshBasicMaterial).opacity = fade * 0.9;
+          } else if (progress < 0.1) {
+            const fade = progress * 10;
+            (traveler.material as THREE.MeshBasicMaterial).opacity = fade * 0.9;
+          }
+        }
       };
       
-      animateAttendee();
-    }
+      // Add to animation loop
+      travelAnimations.push(updatePosition);
+    };
+    
+    // Array to store animation functions
+    const travelAnimations: (() => void)[] = [];
+    
+    // Initially create faces
+    createFaces();
+    
+    // Regenerate faces every 20 seconds
+    const faceGenerationInterval = setInterval(createFaces, 20000);
 
     // Position camera
     camera.position.z = 5;
@@ -221,10 +331,8 @@ const GlobeAnimation = () => {
       
       pulse.scale.set(pulseScale, pulseScale, pulseScale);
       
-      // Animate points
-      points.forEach((point, index) => {
-        point.rotation.y += 0.01 + (index * 0.001);
-      });
+      // Update all travel animations
+      travelAnimations.forEach(updateFn => updateFn());
       
       renderer.render(scene, camera);
       animationFrameId = window.requestAnimationFrame(animate);
@@ -239,6 +347,7 @@ const GlobeAnimation = () => {
       }
       window.removeEventListener('resize', handleResize);
       window.cancelAnimationFrame(animationFrameId);
+      clearInterval(faceGenerationInterval);
       
       // Dispose geometries and materials
       geometry.dispose();
