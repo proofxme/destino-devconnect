@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
 import { CalendarRange, Utensils, Users, X } from "lucide-react";
@@ -18,10 +17,11 @@ import { useToast } from "@/components/ui/use-toast";
 interface TripSidebarProps {
   isMobile?: boolean;
   collapsed?: boolean;
+  onClose?: () => void;
 }
 
-const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed = false }) => {
-  const [open, setOpen] = useState(false);
+const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed = false, onClose }) => {
+  const [open, setOpen] = useState(isMobile);
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const { connected } = useWallet();
@@ -49,6 +49,13 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed =
     }
   };
 
+  const handleClose = () => {
+    setOpen(false);
+    if (onClose) {
+      onClose();
+    }
+  };
+
   if (!connected) {
     return <WalletConnect />;
   }
@@ -63,36 +70,30 @@ const TripSidebar: React.FC<TripSidebarProps> = ({ isMobile = false, collapsed =
 
   if (isMobile) {
     return (
-      <div className="flex items-center justify-between bg-gray-100 p-2 rounded-lg mb-4">
-        <Button 
-          onClick={() => setOpen(true)}
-          className="flex items-center space-x-2 bg-argentina-blue text-white hover:bg-argentina-blue-dark"
-        >
-          <CalendarRange size={16} />
-          <span>My Trip Planner</span>
-        </Button>
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerContent className="p-0 max-h-[85vh]">
-            <DrawerHeader className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white">
-              <div className="flex items-center justify-between">
-                <DrawerTitle>My Devconnect Trip</DrawerTitle>
-                <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="text-white">
-                  <X size={18} />
-                </Button>
-              </div>
-              {tripPlan && (
-                <div className="flex items-center mt-2 text-sm">
-                  <CalendarRange size={16} className="mr-2" />
-                  <span>{formatDate(tripPlan.startDate)} - {formatDate(tripPlan.endDate)}</span>
-                </div>
-              )}
-            </DrawerHeader>
-            <div className="p-4">
-              <MobileTripContent tripPlan={tripPlan} loading={loading} />
+      <Drawer open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen && onClose) onClose();
+      }}>
+        <DrawerContent className="p-0 max-h-[85vh]">
+          <DrawerHeader className="bg-gradient-to-r from-argentina-blue to-devconnect-primary text-white">
+            <div className="flex items-center justify-between">
+              <DrawerTitle>My Devconnect Trip</DrawerTitle>
+              <Button variant="ghost" size="icon" onClick={handleClose} className="text-white">
+                <X size={18} />
+              </Button>
             </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
+            {tripPlan && (
+              <div className="flex items-center mt-2 text-sm">
+                <CalendarRange size={16} className="mr-2" />
+                <span>{formatDate(tripPlan.startDate)} - {formatDate(tripPlan.endDate)}</span>
+              </div>
+            )}
+          </DrawerHeader>
+          <div className="p-4">
+            <MobileTripContent tripPlan={tripPlan} loading={loading} />
+          </div>
+        </DrawerContent>
+      </Drawer>
     );
   }
 

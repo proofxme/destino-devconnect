@@ -7,6 +7,7 @@ import TripSidebar from "./trip/TripSidebar";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "./Navbar";
+import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,10 +23,24 @@ const Layout: React.FC<LayoutProps> = ({
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileTripSidebarOpen, setMobileTripSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarCollapsed(prev => !prev);
   };
+
+  // Listen for trip sidebar open events from navbar
+  useEffect(() => {
+    const handleOpenTripSidebar = () => {
+      setMobileTripSidebarOpen(true);
+    };
+
+    window.addEventListener('open-trip-sidebar', handleOpenTripSidebar);
+    
+    return () => {
+      window.removeEventListener('open-trip-sidebar', handleOpenTripSidebar);
+    };
+  }, []);
 
   // Expose sidebar state to window for other components to access
   useEffect(() => {
@@ -42,7 +57,7 @@ const Layout: React.FC<LayoutProps> = ({
       <div className="min-h-screen">
         <Navbar />
         <div className="pt-16"> {/* Adjusted padding for taller navbar */}
-          {connected && isHomePage && <TripSidebar isMobile />}
+          {connected && mobileTripSidebarOpen && <TripSidebar isMobile onClose={() => setMobileTripSidebarOpen(false)} />}
           <main>{children}</main>
         </div>
       </div>

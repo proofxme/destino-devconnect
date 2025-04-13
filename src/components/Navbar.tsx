@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search, CalendarRange } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { SearchSpotlight } from "./SearchSpotlight";
@@ -39,6 +39,7 @@ const sponsorsLinks = [
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [tripSidebarOpen, setTripSidebarOpen] = useState(false);
   const { connected: isConnected } = useWallet();
 
   useEffect(() => {
@@ -55,6 +56,12 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const openTripSidebar = () => {
+    setTripSidebarOpen(true);
+    // Dispatch a custom event to notify the Layout component to open the trip sidebar
+    window.dispatchEvent(new CustomEvent('open-trip-sidebar'));
+  };
 
   return (
     <nav className={cn(
@@ -159,24 +166,39 @@ const Navbar = () => {
           {isConnected ? <UserProfileDropdown /> : <WalletButton />}
         </div>
         
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation Bar */}
         <div className="lg:hidden flex items-center gap-3">
-          <div className="flex-shrink-0">
-            {isConnected ? 
-              <UserProfileDropdown /> : 
-              <WalletButton />
-            }
-          </div>
+          {/* Search Button */}
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-white"
+            onClick={() => {}}
+            aria-label="Search"
+          >
+            <Search size={20} />
+          </Button>
           
-          <div className="flex-shrink-0">
-            <SearchSpotlight />
-          </div>
+          {/* Trip Agenda Button */}
+          {isConnected && (
+            <Button 
+              variant="ghost"
+              size="sm"
+              className="text-white"
+              onClick={openTripSidebar}
+              aria-label="Trip Agenda"
+            >
+              <CalendarRange size={20} />
+            </Button>
+          )}
           
+          {/* Menu Button */}
           <Button 
             variant="ghost"
             size="sm"
             className="text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
@@ -187,6 +209,11 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-gray-800 w-full shadow-lg">
           <div className="container mx-auto px-4 py-3 flex flex-col space-y-1">
+            {/* Wallet Button in Mobile Menu */}
+            <div className="py-3 mb-3 border-b border-white/20 flex justify-center">
+              {isConnected ? <UserProfileDropdown /> : <WalletButton />}
+            </div>
+            
             <div className="py-2 border-b border-white/20">
               <h3 className="text-white text-xs font-bold mb-1">Explore</h3>
               {navigationLinks.map((item) => (
