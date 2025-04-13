@@ -141,8 +141,11 @@ const GlobeAnimation = () => {
             } else {
               // Reset the animation
               progress = 0;
-              startTime.valueOf = Date.now() + Math.random() * 5000;
+              // Fix: Use a function that returns the new start time instead of trying to assign to valueOf
+              const newStartTime = Date.now() + Math.random() * 5000;
               attendeeDot.position.copy(startPosition);
+              // Update the startTime with the new value
+              startTime = newStartTime;
             }
           }
           
