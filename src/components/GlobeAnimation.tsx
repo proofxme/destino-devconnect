@@ -1,3 +1,4 @@
+
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -16,16 +17,48 @@ const GlobeAnimation = () => {
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create globe
+    // Create low poly globe
     const radius = 2;
-    const segments = 64;
-    const geometry = new THREE.SphereGeometry(radius, segments, segments);
+    const detail = 2; // Lower for more low-poly look
+    const geometry = new THREE.IcosahedronGeometry(radius, detail);
+    
+    // Create vertexColors array for each face
+    const faceCount = geometry.attributes.position.count / 3;
+    const colors = [];
+    
+    // Choose land and water colors
+    const waterColor = new THREE.Color(0x1a3263); // Deep blue
+    const landColor = new THREE.Color(0x308446); // Green for land
+    
+    // Set vertex colors based on height
+    for (let i = 0; i < faceCount; i++) {
+      // Generate random colors for faces with a 30% chance of being land
+      const isLand = Math.random() > 0.7;
+      const color = isLand ? landColor : waterColor;
+      
+      // Apply slight variations for more natural look
+      const r = color.r + (Math.random() * 0.1 - 0.05);
+      const g = color.g + (Math.random() * 0.1 - 0.05);
+      const b = color.b + (Math.random() * 0.1 - 0.05);
+      
+      // Add the same color for all 3 vertices of this face
+      colors.push(r, g, b);
+      colors.push(r, g, b);
+      colors.push(r, g, b);
+    }
+    
+    // Apply the colors to the geometry
+    const colorAttribute = new THREE.Float32BufferAttribute(colors, 3);
+    geometry.setAttribute('color', colorAttribute);
+    
     const material = new THREE.MeshPhongMaterial({
-      color: 0x1a3263,
-      opacity: 0.8,
+      vertexColors: true,
+      flatShading: true,
+      shininess: 0,
+      opacity: 0.9,
       transparent: true,
-      wireframe: false,
     });
+    
     const globe = new THREE.Mesh(geometry, material);
     scene.add(globe);
 
