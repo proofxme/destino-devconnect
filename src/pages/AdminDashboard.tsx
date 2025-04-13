@@ -8,16 +8,17 @@ import { PlusCircle, Building, MapPin, Calendar, Bed, Utensils, Activity } from 
 import Navbar from "@/components/Navbar";
 import VenueProposalForm from "@/components/admin/VenueProposalForm";
 import { toast } from "sonner";
+import { useWallet } from "@/context/WalletContext";
 
 const AdminDashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formType, setFormType] = useState<string>("");
   const navigate = useNavigate();
+  const { connected } = useWallet();
 
-  // Check if wallet is connected
+  // Check if wallet is connected using the wallet context
   const checkWalletConnection = () => {
-    const isConnected = localStorage.getItem("wallet-connected") === "true";
-    if (!isConnected) {
+    if (!connected) {
       toast.error("Please connect your wallet to access the admin dashboard");
       navigate("/");
       return false;
