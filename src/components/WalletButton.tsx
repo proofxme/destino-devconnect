@@ -15,12 +15,13 @@ const WalletButton = () => {
 
   return (
     <Button 
-      variant="outline" 
-      className="border border-white/20 bg-white/10 text-white hover:bg-white/20 h-10 px-4 rounded-md"
+      className="bg-gray-700 hover:bg-gray-600 text-white h-10 rounded-full border border-yellow-500/20 flex items-center"
       onClick={connect} 
       disabled={connecting}
     >
-      <Wallet className="mr-2 h-4 w-4" />
+      <div className="bg-yellow-600 rounded-full h-7 w-7 flex items-center justify-center mr-2">
+        <Wallet className="h-4 w-4 text-white" />
+      </div>
       {connecting ? "Connecting..." : "Connect Wallet"}
     </Button>
   );

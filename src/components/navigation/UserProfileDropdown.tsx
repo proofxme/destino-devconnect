@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -33,7 +34,6 @@ const UserProfileDropdown = () => {
 
   const handleLogout = async () => {
     const success = await disconnect();
-    // We don't need to handle the success value here since the disconnect function already shows a toast
     setIsOpen(false);
   };
 
@@ -46,33 +46,30 @@ const UserProfileDropdown = () => {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
-          className="border-argentina-sun text-argentina-sun hover:bg-argentina-sun/10 flex items-center"
+          className="bg-gray-700 hover:bg-gray-600 text-white rounded-full border border-yellow-500/20 flex items-center pr-3 pl-0"
         >
-          <Avatar className="h-6 w-6 mr-2">
-            <AvatarFallback className="bg-argentina-sun/20 text-argentina-sun text-xs">
+          <div className="bg-yellow-600 rounded-full h-10 w-10 flex items-center justify-center mr-2">
+            <span className="text-white font-bold">
               {walletAddress?.substring(2, 4).toUpperCase() || "WL"}
-            </AvatarFallback>
-          </Avatar>
+            </span>
+          </div>
           {shortenAddress(walletAddress)}
           <ChevronDown className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       
       <DropdownMenuContent className="w-56 bg-white" align="end">
-        <DropdownMenuLabel className="flex items-center gap-2">
-          <User className="h-4 w-4" />
-          <span>My Account</span>
-        </DropdownMenuLabel>
-        
-        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => handleNavigation("/profile")}>
+          <User className="mr-2 h-4 w-4" />
+          <span>My Profile</span>
+        </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => handleNavigation("/transactions")}>
           <History className="mr-2 h-4 w-4" />
           <span>Transaction History</span>
         </DropdownMenuItem>
         
-        <DropdownMenuItem onClick={() => handleNavigation("/account/settings")}>
+        <DropdownMenuItem onClick={() => handleNavigation("/settings")}>
           <Settings className="mr-2 h-4 w-4" />
           <span>Account Settings</span>
         </DropdownMenuItem>

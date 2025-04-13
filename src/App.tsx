@@ -15,6 +15,8 @@ import Activities from "./pages/Activities";
 import Attendants from "./pages/Attendants";
 import Sponsors from "./pages/Sponsors";
 import AdminDashboard from "./pages/AdminDashboard";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +39,8 @@ const App = () => (
                 <Route path="/attendants" element={<Attendants />} />
                 <Route path="/sponsors" element={<Sponsors />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
