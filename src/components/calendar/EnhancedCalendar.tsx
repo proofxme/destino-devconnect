@@ -4,6 +4,7 @@ import { format, addMonths, subMonths, startOfMonth, getDaysInMonth, getDay, add
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Bell, Settings, MoreVertical } from "lucide-react";
 import EventCard from "./EventCard";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type EventCategory = "conference" | "workshop" | "social" | "hackathon";
 
@@ -82,6 +83,7 @@ const EnhancedCalendar = () => {
   const [displayedEvents, setDisplayedEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeMonth, setActiveMonth] = useState<number>(10); // November (0-indexed)
+  const isMobile = useIsMobile();
 
   // Get visible months (current month to event month)
   const getVisibleMonths = () => {
@@ -243,24 +245,33 @@ const EnhancedCalendar = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      <div className="flex h-full">
-        {/* Sidebar */}
+      <div className={`flex ${isMobile ? 'flex-col' : 'h-full'}`}>
+        {/* Sidebar/Month Selector */}
         <motion.div 
-          className="w-64 bg-gray-50 py-8 px-6 border-r border-gray-100"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
+          className={`${isMobile ? 
+            'w-full py-4 px-2 border-b border-gray-100' : 
+            'w-64 bg-gray-50 py-8 px-6 border-r border-gray-100'}`}
+          initial={{ opacity: 0, x: isMobile ? 0 : -20, y: isMobile ? -20 : 0 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl font-bold mb-8 text-gray-800">Calendar</h2>
+          {!isMobile && <h2 className="text-2xl font-bold mb-8 text-gray-800">Calendar</h2>}
 
-          {/* Only show visible months */}
-          <div className="space-y-1">
+          {/* Months display - horizontal scrollable for mobile */}
+          <div className={`${isMobile ? 
+            'flex flex-wrap gap-2 justify-center' : 
+            'space-y-1'}`}
+          >
             {visibleMonths.map(({ month, year, name }) => (
               <motion.div
                 key={`${name}-${year}`}
-                whileHover={{ x: 5 }}
-                className={`cursor-pointer py-3 px-4 text-base rounded-lg transition-colors
-                          ${activeMonth === month ? 'font-bold bg-gray-100 text-gray-900' : 'text-gray-500'}`}
+                whileHover={{ x: isMobile ? 0 : 5, scale: isMobile ? 1.05 : 1 }}
+                className={`cursor-pointer ${isMobile ? 
+                  'py-2 px-3 text-sm rounded-lg inline-block transition-colors' : 
+                  'py-3 px-4 text-base rounded-lg transition-colors'} 
+                  ${activeMonth === month ? 
+                    'font-bold bg-gray-100 text-gray-900' : 
+                    'text-gray-500'}`}
                 onClick={() => handleMonthClick(month, year)}
               >
                 {name} {year !== new Date().getFullYear() ? year : ''}
@@ -270,35 +281,35 @@ const EnhancedCalendar = () => {
         </motion.div>
 
         {/* Main Calendar Content */}
-        <div className="flex-1 p-8">
+        <div className={`${isMobile ? 'p-4' : 'flex-1 p-8'}`}>
           <div className="flex justify-between items-center mb-8">
             <motion.div 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-2xl font-bold"
+              className="text-xl md:text-2xl font-bold"
             >
               {formattedSelectedDate}
             </motion.div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <motion.button
                 whileHover={{ scale: 1.1 }}
-                className="p-2 rounded-full hover:bg-gray-100"
+                className="p-1 md:p-2 rounded-full hover:bg-gray-100"
               >
-                <Settings size={20} className="text-gray-500" />
+                <Settings size={isMobile ? 16 : 20} className="text-gray-500" />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1 }}
-                className="p-2 rounded-full hover:bg-gray-100 relative"
+                className="p-1 md:p-2 rounded-full hover:bg-gray-100 relative"
               >
-                <Bell size={20} className="text-gray-500" />
+                <Bell size={isMobile ? 16 : 20} className="text-gray-500" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1 }}
-                className="p-2 rounded-full hover:bg-gray-100"
+                className="p-1 md:p-2 rounded-full hover:bg-gray-100"
               >
-                <MoreVertical size={20} className="text-gray-500" />
+                <MoreVertical size={isMobile ? 16 : 20} className="text-gray-500" />
               </motion.button>
             </div>
           </div>
@@ -307,30 +318,30 @@ const EnhancedCalendar = () => {
           <div className="flex justify-between items-center mb-6">
             <motion.button
               whileHover={{ scale: 1.05 }}
-              className="p-2 rounded-full hover:bg-gray-100"
+              className="p-1 md:p-2 rounded-full hover:bg-gray-100"
               onClick={handlePrevMonth}
             >
-              <ChevronLeft size={24} className="text-gray-600" />
+              <ChevronLeft size={isMobile ? 20 : 24} className="text-gray-600" />
             </motion.button>
             
-            <h3 className="text-lg font-medium">
+            <h3 className="text-base md:text-lg font-medium">
               {format(currentMonth, "MMMM yyyy")}
             </h3>
             
             <motion.button
               whileHover={{ scale: 1.05 }}
-              className="p-2 rounded-full hover:bg-gray-100"
+              className="p-1 md:p-2 rounded-full hover:bg-gray-100"
               onClick={handleNextMonth}
             >
-              <ChevronRight size={24} className="text-gray-600" />
+              <ChevronRight size={isMobile ? 20 : 24} className="text-gray-600" />
             </motion.button>
           </div>
 
           {/* Calendar Days Header */}
           <div className="grid grid-cols-7 gap-1 mb-4">
             {DAYS.map(day => (
-              <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-blue-600">
-                {day}
+              <div key={day} className="h-8 md:h-10 flex items-center justify-center text-xs md:text-sm font-medium text-blue-600">
+                {isMobile ? day.substring(0, 1) : day}
               </div>
             ))}
           </div>
@@ -355,10 +366,10 @@ const EnhancedCalendar = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex justify-center items-center h-48"
+                  className="flex justify-center items-center h-36 md:h-48"
                 >
-                  <div className="relative h-12 w-12">
-                    <div className="absolute h-12 w-12 rounded-full border-4 border-t-argentina-blue border-b-transparent border-l-transparent border-r-transparent animate-spin"></div>
+                  <div className="relative h-10 w-10 md:h-12 md:w-12">
+                    <div className="absolute h-10 w-10 md:h-12 md:w-12 rounded-full border-4 border-t-argentina-blue border-b-transparent border-l-transparent border-r-transparent animate-spin"></div>
                   </div>
                 </motion.div>
               ) : displayedEvents.length > 0 ? (
@@ -369,7 +380,7 @@ const EnhancedCalendar = () => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h3 className="text-lg font-medium mb-4">Events for {format(selectedDate, "MMM d, yyyy")}</h3>
+                  <h3 className="text-base md:text-lg font-medium mb-4">Events for {format(selectedDate, "MMM d, yyyy")}</h3>
                   <div className="grid grid-cols-1 gap-4">
                     {displayedEvents.map(event => (
                       <EventCard key={event.id} {...event} />
@@ -382,7 +393,7 @@ const EnhancedCalendar = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-200 rounded-lg h-48 mt-2"
+                  className="flex flex-col items-center justify-center p-4 md:p-8 border-2 border-dashed border-gray-200 rounded-lg h-36 md:h-48 mt-2"
                 >
                   <motion.div 
                     initial={{ scale: 0.8 }}
@@ -395,14 +406,14 @@ const EnhancedCalendar = () => {
                       repeatDelay: 2
                     }}
                   >
-                    <div className="text-6xl mb-4">📅</div>
+                    <div className="text-4xl md:text-6xl mb-3 md:mb-4">📅</div>
                   </motion.div>
-                  <p className="text-center text-gray-500 text-lg">No events scheduled for this date</p>
+                  <p className="text-center text-gray-500 text-base md:text-lg">No events scheduled for this date</p>
                 </motion.div>
               )}
             </AnimatePresence>
             
-            <div className="mt-8 text-center text-sm text-gray-500">
+            <div className="mt-6 md:mt-8 text-center text-xs md:text-sm text-gray-500">
               <p>This month you have {events.filter(event => isSameMonth(event.date, currentMonth)).length} events to attend</p>
               <p>Completed 0 events</p>
             </div>

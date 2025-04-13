@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Event = {
   id: number;
@@ -71,6 +72,7 @@ const EventCalendar = () => {
   const [selectedEvents, setSelectedEvents] = useState<Event[]>(
     events.filter(event => format(event.date, "yyyy-MM-dd") === format(new Date("2025-11-15"), "yyyy-MM-dd"))
   );
+  const isMobile = useIsMobile();
 
   // Function to get events for a specific day
   const getEventsForDay = (day: Date) => {
@@ -138,10 +140,12 @@ const EventCalendar = () => {
             nav_button: "p-1",
             nav_button_previous: "mr-auto",
             nav_button_next: "ml-auto",
-            head_cell: "font-normal text-xs",
+            head_cell: `font-normal ${isMobile ? 'text-[10px]' : 'text-xs'}`,
             table: "w-full border-collapse",
             row: "flex w-full",
             cell: "p-0",
+            months: `${isMobile ? 'flex flex-wrap justify-center' : 'flex flex-col'}`,
+            month: `${isMobile ? 'w-full' : ''}`,
             ...Object.fromEntries(
               isDayWithEvent ? 
                 [["day_hasEvent", "font-bold underline"]] : 
