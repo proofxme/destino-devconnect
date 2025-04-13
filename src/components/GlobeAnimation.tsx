@@ -1,4 +1,3 @@
-
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -128,7 +127,7 @@ const GlobeAnimation = () => {
         let progress = 0;
         
         const duration = 2000 + Math.random() * 3000; // Random duration between 2-5 seconds
-        const startTime = Date.now() + Math.random() * 10000; // Random delay start
+        let startTime = Date.now() + Math.random() * 10000; // Random delay start
         
         function updatePosition() {
           const now = Date.now();
@@ -141,11 +140,8 @@ const GlobeAnimation = () => {
             } else {
               // Reset the animation
               progress = 0;
-              // Fix: Use a function that returns the new start time instead of trying to assign to valueOf
-              const newStartTime = Date.now() + Math.random() * 5000;
+              startTime = Date.now() + Math.random() * 5000;
               attendeeDot.position.copy(startPosition);
-              // Update the startTime with the new value
-              startTime = newStartTime;
             }
           }
           
