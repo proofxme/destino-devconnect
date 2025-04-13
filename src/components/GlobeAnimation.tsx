@@ -1,3 +1,4 @@
+
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -127,12 +128,14 @@ const GlobeAnimation = () => {
       for (let i = 0; i < facesCount; i++) {
         // Random position (avoiding Antarctica and oceans near Argentina)
         let lat, long;
+        let distToArg; // Define the variable here
+        
         do {
           lat = Math.random() * 140 - 60;  // -60 to +80 degrees latitude
           long = Math.random() * 360 - 180;  // -180 to +180 degrees longitude
           
-          // Avoid points too close to Argentina (arbitrary distance check)
-          const distToArg = Math.sqrt(
+          // Calculate distance to Argentina (arbitrary distance check)
+          distToArg = Math.sqrt(
             Math.pow(lat - argentinaLat, 2) + 
             Math.pow(long - argentinaLong, 2)
           );
