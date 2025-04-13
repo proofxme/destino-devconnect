@@ -17,56 +17,55 @@ const GlobeAnimation = () => {
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create low poly globe
+    // Create Earth with textures
     const radius = 2;
-    const detail = 2; // Lower for more low-poly look
-    const geometry = new THREE.IcosahedronGeometry(radius, detail);
+    const segments = 64;
+    const geometry = new THREE.SphereGeometry(radius, segments, segments);
+
+    // Earth material with textures
+    const loader = new THREE.TextureLoader();
     
-    // Create vertexColors array for each face
-    const faceCount = geometry.attributes.position.count / 3;
-    const colors = [];
+    // Create Earth with day/night textures
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
     
-    // Choose land and water colors
-    const waterColor = new THREE.Color(0x1a3263); // Deep blue
-    const landColor = new THREE.Color(0x308446); // Green for land
-    
-    // Set vertex colors based on height
-    for (let i = 0; i < faceCount; i++) {
-      // Generate random colors for faces with a 30% chance of being land
-      const isLand = Math.random() > 0.7;
-      const color = isLand ? landColor : waterColor;
-      
-      // Apply slight variations for more natural look
-      const r = color.r + (Math.random() * 0.1 - 0.05);
-      const g = color.g + (Math.random() * 0.1 - 0.05);
-      const b = color.b + (Math.random() * 0.1 - 0.05);
-      
-      // Add the same color for all 3 vertices of this face
-      colors.push(r, g, b);
-      colors.push(r, g, b);
-      colors.push(r, g, b);
-    }
-    
-    // Apply the colors to the geometry
-    const colorAttribute = new THREE.Float32BufferAttribute(colors, 3);
-    geometry.setAttribute('color', colorAttribute);
-    
-    const material = new THREE.MeshPhongMaterial({
-      vertexColors: true,
-      flatShading: true,
-      shininess: 0,
-      opacity: 0.9,
-      transparent: true,
+    // Day side of Earth
+    const earthDayTexture = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+    const earthDayMaterial = new THREE.MeshPhongMaterial({
+      map: earthDayTexture,
+      shininess: 5,
     });
+    const earthDayMesh = new THREE.Mesh(geometry, earthDayMaterial);
+    earthGroup.add(earthDayMesh);
     
-    const globe = new THREE.Mesh(geometry, material);
-    scene.add(globe);
+    // Night side of Earth (emissive)
+    const earthNightTexture = loader.load('https://threejs.org/examples/textures/planets/earth_lights_2048.png');
+    const earthNightMaterial = new THREE.MeshPhongMaterial({
+      map: earthDayTexture, // Base texture is still day texture
+      emissiveMap: earthNightTexture,
+      emissive: new THREE.Color(0x6666ff),
+      emissiveIntensity: 1.5,
+      shininess: 5,
+    });
+    const earthNightMesh = new THREE.Mesh(geometry, earthNightMaterial);
+    earthGroup.add(earthNightMesh);
+    
+    // Cloud layer
+    const cloudGeometry = new THREE.SphereGeometry(radius + 0.03, segments, segments);
+    const cloudTexture = loader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+    const cloudMaterial = new THREE.MeshPhongMaterial({
+      map: cloudTexture,
+      transparent: true,
+      opacity: 0.6,
+    });
+    const cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
+    earthGroup.add(cloudMesh);
 
     // Add ambient light
     const ambientLight = new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 
-    // Add directional light
+    // Add directional light (sun)
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 3, 5);
     scene.add(directionalLight);
@@ -160,7 +159,7 @@ const GlobeAnimation = () => {
         let progress = 0;
         
         const duration = 2000 + Math.random() * 3000; // Random duration between 2-5 seconds
-        let startTime = Date.now() + Math.random() * 10000; // Random delay start
+        let startTime = Date.now() + Math.random() * 10000; // Random delay start - changed to let
         
         function updatePosition() {
           const now = Date.now();
@@ -173,7 +172,7 @@ const GlobeAnimation = () => {
             } else {
               // Reset the animation
               progress = 0;
-              startTime = Date.now() + Math.random() * 5000;
+              startTime = Date.now() + Math.random() * 5000; // Now we can reassign to startTime
               attendeeDot.position.copy(startPosition);
             }
           }
@@ -209,7 +208,11 @@ const GlobeAnimation = () => {
     let pulseDirection = 0.01;
     
     const animate = () => {
-      globe.rotation.y += 0.002;
+      // Rotate Earth
+      earthGroup.rotation.y += 0.002;
+      
+      // Rotate clouds slightly faster for effect
+      cloudMesh.rotation.y += 0.0022;
       
       // Pulse effect
       pulseScale += pulseDirection;
@@ -239,7 +242,10 @@ const GlobeAnimation = () => {
       
       // Dispose geometries and materials
       geometry.dispose();
-      material.dispose();
+      earthDayMaterial.dispose();
+      earthNightMaterial.dispose();
+      cloudMaterial.dispose();
+      cloudGeometry.dispose();
       markerGeometry.dispose();
       markerMaterial.dispose();
       pulseGeometry.dispose();
