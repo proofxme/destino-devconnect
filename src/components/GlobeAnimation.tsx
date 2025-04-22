@@ -1,4 +1,3 @@
-
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -121,14 +120,15 @@ const GlobeAnimation = () => {
       travelPaths.length = 0;
       travelerDots.length = 0;
       
-      // Number of faces to create
-      const facesCount = 12;
+      // Track total character count
+      let totalCharCount = 0;
+      const MAX_CHAR_COUNT = 2000;
       
       // Create faces at random positions on the globe
-      for (let i = 0; i < facesCount; i++) {
-        // Random position (avoiding Antarctica and oceans near Argentina)
-        let lat, long;
-        let distToArg; // Define the variable here
+      for (let i = 0; i < 100; i++) {  // Limit iterations to prevent infinite loop
+        if (totalCharCount >= MAX_CHAR_COUNT) break;
+        
+        let lat, long, distToArg;
         
         do {
           lat = Math.random() * 140 - 60;  // -60 to +80 degrees latitude
@@ -148,7 +148,18 @@ const GlobeAnimation = () => {
         earthGroup.add(faceGroup);
         faceGroups.push(faceGroup);
         
-        // Create emoji-style face
+        // Generate a random "bio" for the face
+        const bioOptions = [
+          "Web3 Developer", "Blockchain Enthusiast", "Crypto Trader", 
+          "Smart Contract Expert", "NFT Artist", "DeFi Innovator"
+        ];
+        const bio = bioOptions[Math.floor(Math.random() * bioOptions.length)];
+        
+        // Check if adding this face would exceed character limit
+        if (totalCharCount + bio.length > MAX_CHAR_COUNT) break;
+        
+        totalCharCount += bio.length;
+        
         // Base circle for face
         const faceGeometry = new THREE.CircleGeometry(0.12, 32);
         const faceMaterial = new THREE.MeshBasicMaterial({ 
