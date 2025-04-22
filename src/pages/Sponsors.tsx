@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ExternalLink, Gift, Award, Users } from "lucide-react";
+import { Award, Gift, Users } from "lucide-react";
 
 // Mock data for sponsors
 const SPONSORS = [
@@ -75,58 +75,79 @@ const sponsorsByTier = SPONSORS.reduce((acc, sponsor) => {
 
 const Sponsors = () => {
   return (
-    <div className="container mx-auto py-16 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Ecosystem Partners</h1>
-        <p className="text-gray-600 max-w-3xl">
-          Devconnect is made possible by our incredible sponsors and ecosystem partners. 
-          Explore the companies and projects supporting Devconnect Argentina 2025 and learn about 
-          the benefits they provide to attendees.
-        </p>
-      </div>
+    <div className="w-full min-h-screen bg-white">
+      {/* Header with visual background and overlay */}
+      <header 
+        className="relative min-h-[340px] flex items-end"
+        style={{
+          backgroundImage:
+            'url("https://devconnect.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-bg.eb2d9793.png&w=3840&q=75")',
+          backgroundPosition: "center 20%",
+          backgroundSize: "cover",
+        }}
+      >
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1E097F]/90 via-[#4E3AFF]/80 to-[#00B5F5]/70 pointer-events-none z-0" />
+        <div className="container mx-auto px-4 pb-12 pt-20 relative z-10 flex flex-col">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-lg mb-2 animate-fade-in">
+            Ecosystem Partners
+          </h1>
+          <p className="text-white/80 max-w-2xl text-lg animate-fade-in" style={{animationDelay: '200ms', animationFillMode:'both'}}>
+            Devconnect is made possible by our incredible sponsors and ecosystem partners.{" "}
+            <br className="hidden md:block"/>
+            Meet the supporters empowering Devconnect Argentina 2025 and explore attendee benefits!
+          </p>
+        </div>
+      </header>
 
-      <Tabs defaultValue="all" className="mb-8">
-        <TabsList className="mb-6">
-          <TabsTrigger value="all">All Partners</TabsTrigger>
-          <TabsTrigger value="platinum">Platinum</TabsTrigger>
-          <TabsTrigger value="gold">Gold</TabsTrigger>
-          <TabsTrigger value="silver">Silver</TabsTrigger>
-          <TabsTrigger value="bronze">Bronze</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="all" className="mt-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SPONSORS.map(sponsor => (
-              <SponsorCard key={sponsor.id} sponsor={sponsor} />
+      <section className="-mt-14 z-10 relative pb-8 animate-fade-in">
+        <div className="container mx-auto px-4">
+          <Tabs defaultValue="all" className="mb-8">
+            <TabsList className="mb-6 bg-[#F6F6F784] border shadow-lg rounded-xl overflow-x-auto">
+              <TabsTrigger value="all" className="font-bold data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#F3D364] data-[state=active]:to-[#FCBF49] data-[state=active]:text-[#1A247A] data-[state=active]:shadow-sm transition-colors">
+                All Partners
+              </TabsTrigger>
+              <TabsTrigger value="platinum" className="font-bold">Platinum</TabsTrigger>
+              <TabsTrigger value="gold" className="font-bold">Gold</TabsTrigger>
+              <TabsTrigger value="silver" className="font-bold">Silver</TabsTrigger>
+              <TabsTrigger value="bronze" className="font-bold">Bronze</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="mt-0">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {SPONSORS.map(sponsor => (
+                  <SponsorCard key={sponsor.id} sponsor={sponsor} />
+                ))}
+              </div>
+            </TabsContent>
+            
+            {Object.entries(sponsorsByTier).map(([tier, sponsors]) => (
+              <TabsContent key={tier} value={tier.toLowerCase()} className="mt-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {sponsors.map(sponsor => (
+                    <SponsorCard key={sponsor.id} sponsor={sponsor} />
+                  ))}
+                </div>
+              </TabsContent>
             ))}
-          </div>
-        </TabsContent>
-        
-        {Object.entries(sponsorsByTier).map(([tier, sponsors]) => (
-          <TabsContent key={tier} value={tier.toLowerCase()} className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sponsors.map(sponsor => (
-                <SponsorCard key={sponsor.id} sponsor={sponsor} />
-              ))}
-            </div>
-          </TabsContent>
-        ))}
-      </Tabs>
+          </Tabs>
+        </div>
+      </section>
 
-      <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mt-12">
-        <h2 className="text-2xl font-bold mb-4 flex items-center">
-          <Gift className="mr-2 text-argentina-blue" /> Attendee Benefits
+      <section className="bg-[#F6F6F7] p-6 rounded-3xl border border-gray-200 mt-12 container mx-auto px-4 shadow animate-fade-in">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-[#1E097F]">
+          <Gift className="text-[#43C3F7]" /> Attendee Benefits
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-700 mb-6">
           Our sponsors provide various benefits and perks for Devconnect attendees. 
-          Here's what you can expect:
+          Here’s what you can expect:
         </p>
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+          {/* Exclusive Content */}
+          <Card className="rounded-xl shadow-lg border-0 bg-white hover:scale-105 hover:shadow-2xl transition-transform duration-200">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Award className="mr-2 text-argentina-blue" />
+              <CardTitle className="flex items-center gap-2 text-[#1A247A]">
+                <Award className="text-argentina-blue" />
                 Exclusive Content
               </CardTitle>
             </CardHeader>
@@ -136,11 +157,11 @@ const Sponsors = () => {
               </p>
             </CardContent>
           </Card>
-          
-          <Card>
+          {/* Networking */}
+          <Card className="rounded-xl shadow-lg border-0 bg-white hover:scale-105 hover:shadow-2xl transition-transform duration-200">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Users className="mr-2 text-argentina-blue" />
+              <CardTitle className="flex items-center gap-2 text-[#1A247A]">
+                <Users className="text-argentina-blue" />
                 Networking
               </CardTitle>
             </CardHeader>
@@ -150,11 +171,11 @@ const Sponsors = () => {
               </p>
             </CardContent>
           </Card>
-          
-          <Card>
+          {/* Swag & Resources */}
+          <Card className="rounded-xl shadow-lg border-0 bg-white hover:scale-105 hover:shadow-2xl transition-transform duration-200">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <Gift className="mr-2 text-argentina-blue" />
+              <CardTitle className="flex items-center gap-2 text-[#1A247A]">
+                <Gift className="text-argentina-blue" />
                 Swag & Resources
               </CardTitle>
             </CardHeader>
@@ -165,7 +186,17 @@ const Sponsors = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </section>
+      {/* Animations - fade-in */}
+      <style>{`
+        .animate-fade-in {
+          opacity: 0;
+          animation: fade-in 0.9s cubic-bezier(0.19,1,0.22,1) forwards;
+        }
+        @keyframes fade-in {
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };
@@ -174,42 +205,52 @@ interface SponsorCardProps {
   sponsor: typeof SPONSORS[0];
 }
 
-const SponsorCard = ({ sponsor }: SponsorCardProps) => {
-  const tierColors = {
-    "Platinum": "bg-slate-200 hover:bg-slate-300 text-slate-900",
-    "Gold": "bg-amber-100 hover:bg-amber-200 text-amber-900",
-    "Silver": "bg-gray-100 hover:bg-gray-200 text-gray-800",
-    "Bronze": "bg-orange-100 hover:bg-orange-200 text-orange-900",
-  };
-  
-  return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <Badge variant="outline" className={tierColors[sponsor.tier as keyof typeof tierColors]}>
-            {sponsor.tier}
-          </Badge>
-        </div>
-        <CardTitle>{sponsor.name}</CardTitle>
-        <CardDescription>{sponsor.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="pb-2">
-        <h4 className="text-sm font-medium mb-2">Benefits:</h4>
-        <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
-          {sponsor.benefits.map((benefit, index) => (
-            <li key={index}>{benefit}</li>
-          ))}
-        </ul>
-      </CardContent>
-      <CardFooter>
-        <Button variant="outline" size="sm" className="w-full" asChild>
-          <a href={sponsor.website} target="_blank" rel="noopener noreferrer">
-            Visit Website <ExternalLink className="ml-2 h-4 w-4" />
-          </a>
-        </Button>
-      </CardFooter>
-    </Card>
-  );
+const tierColors = {
+  Platinum: "bg-[#c4cffe] text-[#1A247A] border-2 border-[#F3D364]",
+  Gold: "bg-[#fff6d2] text-[#917E2B] border-2 border-[#FCBF49]",
+  Silver: "bg-[#F6F6F7] text-[#555] border-2 border-[#D9D9D9]",
+  Bronze: "bg-[#FFE1C1] text-[#8D5524] border-2 border-[#FFD6A5]",
 };
 
+const SponsorCard = ({ sponsor }: SponsorCardProps) => (
+  <div className="relative group rounded-2xl bg-white border border-gray-100 shadow-lg hover:shadow-xl transition-shadow duration-200 hover:scale-105 overflow-hidden flex flex-col items-stretch min-h-[340px]">
+    <div className="flex flex-col items-center p-6 pb-2">
+      <div className="w-20 h-20 rounded-full bg-white border-2 shadow-md flex items-center justify-center mb-3 overflow-hidden">
+        <img 
+          src={sponsor.logo}
+          alt={`${sponsor.name} logo`}
+          className="object-contain w-16 h-16"
+          loading="lazy"
+        />
+      </div>
+      <Badge className={`${tierColors[sponsor.tier as keyof typeof tierColors]} mt-1 mb-2 text-xs font-bold py-1 px-3 rounded-full shadow`}>
+        {sponsor.tier}
+      </Badge>
+      <span className="block text-center font-extrabold text-lg text-[#1A247A] mb-1 leading-tight">{sponsor.name}</span>
+      <p className="text-gray-700 text-sm text-center mb-3 line-clamp-2">{sponsor.description}</p>
+    </div>
+    <div className="px-6 pb-2">
+      <h4 className="text-xs uppercase mb-1 text-gray-500 tracking-wide font-semibold">Benefits:</h4>
+      <ul className="text-sm text-gray-700 list-disc list-inside space-y-1 mb-2">
+        {sponsor.benefits.map((benefit, idx) => (
+          <li key={idx}>{benefit}</li>
+        ))}
+      </ul>
+    </div>
+    <div className="mt-auto px-6 pb-6">
+      <Button
+        variant="default"
+        size="sm"
+        className="w-full rounded-full font-bold bg-gradient-to-r from-[#F3D364] to-[#FCBF49] text-[#1A247A] hover:from-[#f0e600] hover:to-[#f7c825] active:scale-95 transition-transform"
+        asChild
+      >
+        <a href={sponsor.website} target="_blank" rel="noopener noreferrer">
+          Visit Website
+        </a>
+      </Button>
+    </div>
+  </div>
+);
+
 export default Sponsors;
+
