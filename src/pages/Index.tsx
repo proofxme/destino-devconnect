@@ -1,3 +1,4 @@
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountdownTimer from "@/components/CountdownTimer";
@@ -89,7 +90,13 @@ const Index = () => {
 
   return (
     <div className="relative">
-      <div className="bg-gradient-to-br from-argentina-blue to-devconnect-primary relative">
+      <div className="bg-cover bg-center bg-no-repeat relative" 
+           style={{
+             backgroundImage: 'url("https://devconnect.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero-bg.eb2d9793.png&w=3840&q=75")',
+             backgroundSize: 'cover',
+             backgroundColor: 'rgba(0,0,0,0.5)', // Optional: add a dark overlay
+             backgroundBlendMode: 'multiply' // Optional: darken the image
+           }}>
         <Navbar />
         <div className="container mx-auto pt-32 pb-20 px-[16px]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
