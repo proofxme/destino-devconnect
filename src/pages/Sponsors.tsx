@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Award, Gift, Users } from "lucide-react";
 
-// Mock data for sponsors
+// Updated SPONSORS array with Lorem Picsum image URLs
 const SPONSORS = [
   {
     id: 1,
     name: "Ethereum Foundation",
     description: "Supporting the Ethereum ecosystem through research, development, and education.",
-    logo: "https://ethereum.org/static/a110735dade3f354a46fc2446cd52476/69f77/eth-home-icon.png",
+    logo: "https://picsum.photos/id/1001/300/300",
     tier: "Platinum",
     benefits: ["Custom booth", "Main stage keynote", "VIP dinner access", "Logo on all materials"],
     website: "https://ethereum.org"
@@ -21,7 +21,7 @@ const SPONSORS = [
     id: 2,
     name: "Polygon Labs",
     description: "Building and connecting Ethereum-compatible blockchain networks.",
-    logo: "https://cryptologos.cc/logos/polygon-matic-logo.png",
+    logo: "https://picsum.photos/id/1002/300/300",
     tier: "Gold",
     benefits: ["Premium booth", "Workshop hosting", "VIP event access", "Logo on digital assets"],
     website: "https://polygon.technology"
@@ -30,7 +30,7 @@ const SPONSORS = [
     id: 3,
     name: "Chainlink",
     description: "Providing secure and reliable oracles for smart contracts across blockchains.",
-    logo: "https://cryptologos.cc/logos/chainlink-link-logo.png",
+    logo: "https://picsum.photos/id/1003/300/300",
     tier: "Gold",
     benefits: ["Premium booth", "Workshop hosting", "VIP event access", "Logo on digital assets"],
     website: "https://chain.link"
@@ -39,7 +39,7 @@ const SPONSORS = [
     id: 4,
     name: "Arbitrum",
     description: "Layer 2 scaling solution for Ethereum that enables high-throughput, low cost smart contracts.",
-    logo: "https://cryptologos.cc/logos/arbitrum-arb-logo.png",
+    logo: "https://picsum.photos/id/1004/300/300",
     tier: "Silver",
     benefits: ["Standard booth", "Lightning talk", "Event tickets", "Digital promotion"],
     website: "https://arbitrum.io"
@@ -48,7 +48,7 @@ const SPONSORS = [
     id: 5,
     name: "Optimism",
     description: "Layer 2 scaling solution focused on reducing transaction costs and latency.",
-    logo: "https://cryptologos.cc/logos/optimism-op-logo.png",
+    logo: "https://picsum.photos/id/1005/300/300",
     tier: "Silver",
     benefits: ["Standard booth", "Lightning talk", "Event tickets", "Digital promotion"],
     website: "https://optimism.io"
@@ -57,7 +57,7 @@ const SPONSORS = [
     id: 6,
     name: "Uniswap",
     description: "The leading decentralized exchange protocol for trading cryptocurrencies.",
-    logo: "https://cryptologos.cc/logos/uniswap-uni-logo.png",
+    logo: "https://picsum.photos/id/1006/300/300",
     tier: "Bronze",
     benefits: ["Table space", "Swag distribution", "Tickets", "Website listing"],
     website: "https://uniswap.org"
