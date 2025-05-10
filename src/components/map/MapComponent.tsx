@@ -4,6 +4,11 @@ import { PointOfInterest, DEFAULT_CENTER, DEFAULT_ZOOM, getIcon } from './mapUti
 import 'leaflet/dist/leaflet.css';
 import { ReactElement } from 'react';
 import L from 'leaflet';
+// Fix Leaflet icon issue for webpack
+import { fixLeafletIcon } from './leafletFix';
+
+// Initialize fix for Leaflet default icon paths
+fixLeafletIcon();
 
 interface MapComponentProps {
   pois: PointOfInterest[];
