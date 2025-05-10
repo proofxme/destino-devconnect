@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Search, CalendarRange } from 'lucide-react';
+import { Menu, X, CalendarRange } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { SearchSpotlight } from "./SearchSpotlight";
@@ -169,15 +169,7 @@ const Navbar = () => {
         {/* Mobile Navigation Bar */}
         <div className="lg:hidden flex items-center gap-3">
           {/* Search Button */}
-          <Button 
-            variant="ghost"
-            size="sm"
-            className="text-white"
-            onClick={() => {}}
-            aria-label="Search"
-          >
-            <Search size={20} />
-          </Button>
+          <SearchSpotlight />
           
           {/* Trip Agenda Button */}
           {isConnected && (

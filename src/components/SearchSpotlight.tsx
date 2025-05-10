@@ -105,6 +105,7 @@ export function SearchSpotlight() {
           : "relative h-10 w-10 md:w-60 md:justify-start md:px-4 md:py-2 text-base rounded-md bg-white/10 hover:bg-white/20 text-white"
         }
         onClick={() => setOpen(true)}
+        aria-label="Search"
       >
         <Search className={isMobile ? "h-5 w-5" : "h-5 w-5 md:mr-2"} />
         {!isMobile && <span className="hidden md:inline-flex">Search...</span>}
